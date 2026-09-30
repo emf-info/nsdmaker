@@ -5,7 +5,7 @@
 
 ## Download instructions
 ```bash
-git clone https://github.com/charyan/nsdmaker.git
+git clone https://github.com/emf-info/nsdmaker.git
 cd nsdmaker
 firefox ./index.html
 ```
