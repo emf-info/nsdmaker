@@ -12,22 +12,27 @@
 
 <body>
   <div class="menu">
-    <button onclick="upload();">Open <b>[^O]</b></button>
-    <button onclick="save();">Save <b>[^S]</b></button>
-    <button onclick="printContent();">Print <b>[^P]</b></button>
-    <button onclick="removeElement();">Delete <b>[DEL]</b></button>
-    <button onclick="centerCanvas();">Center canvas <b>[^A]</b></button>
-    <button onclick="undo();">Undo <b>[^Z]</b></button>
-    <button onclick="redo();">Redo <b>[^Y]</b></button>
-    <button id="png" onclick="getImage();">Export PNG <b>[^E]</b></button>
-    <button onclick="clearCanvas();">Clear <b>[^DEL]</b></button>
-    <a href="https://github.com/charyan/nsdmaker" target="_blank"><img src="res/img/github-mark-white.png"></a>
+    <button data-i18n="btn_open" onclick="upload();">Ouvrir <b>[^O]</b></button>
+    <button data-i18n="btn_save" onclick="save();">Enregistrer <b>[^S]</b></button>
+    <!--<button onclick="printContent();">Imprimer <b>[^P]</b></button>-->
+    <button data-i18n="btn_delete" onclick="removeElement();">Supprimer <b>[DEL]</b></button>
+    <button data-i18n="btn_center" onclick="centerCanvas();">Centrer <b>[^A]</b></button>
+    <button data-i18n="btn_undo" onclick="undo();">Annuler <b>[^Z]</b></button>
+    <button data-i18n="btn_redo" onclick="redo();">Rétablir <b>[^Y]</b></button>
+    <button id="png" data-i18n="btn_export" onclick="getImage();">Exporter l'image <b>[^E]</b></button>
+    <button data-i18n="btn_clear" onclick="clearCanvas();">Tout effacer <b>[^DEL]</b></button>
+    <select id="lang-select" class="lang-select" onchange="setLanguage(this.value)">
+      <option value="fr">FR</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
   </div>
 
 
   <div id="canvas">
     <div id="rblock" class="dblock program">
-      <textarea rows="1" placeholder="Program" ondrop="return false;" oninput="textareaResize(event);"></textarea>
+      <textarea rows="1" placeholder="Program" data-i18n-ph="ph_program" ondrop="return false;"
+        oninput="textareaResize(event);"></textarea>
       <div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
@@ -37,25 +42,25 @@
 
   <div id="sidebar">
 
-    <h2>Process</h2>
+    <h2 data-i18n="heading_instruction">Instruction</h2>
 
     <div class="dblock process" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea rows="1" placeholder="Process" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
-    <h2>Decision</h2>
+    <h2 data-i18n="heading_alternative">Alternative</h2>
 
     <div class="dblock decision decision-two" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea rows="1" placeholder="Condition" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea rows="1" placeholder="Alternative" data-i18n-ph="ph_alternative" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
       <div class="triangles">
         <svg>
@@ -67,7 +72,7 @@
       </div>
       <div class="decision-branches">
         <div class="decision-branch">
-          <textarea class="decision-two-ta" rows="1" placeholder="True" ondrop="return false;"
+          <textarea class="decision-two-ta" rows="1" placeholder="Vrai" data-i18n-ph="ph_true" ondrop="return false;"
             oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
 
@@ -76,7 +81,7 @@
           </div>
         </div>
         <div class="decision-branch">
-          <textarea class="decision-two-ta" rows="1" placeholder="False" ondrop="return false;"
+          <textarea class="decision-two-ta" rows="1" placeholder="Faux" data-i18n-ph="ph_false" ondrop="return false;"
             oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
           <div class="droparea drop-before-end decision-two-da" ondrop="drop(event)" ondragover="allowDrop(event)"
@@ -87,14 +92,14 @@
     </div>
 
 
-    <h2>CASE Statement</h2>
+    <h2 data-i18n="heading_selection">Sélection</h2>
 
     <div class="dblock decision" draggable="true" ondragstart="drag(event)" ondrop="decisionDrop(event);">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea rows="1" placeholder="Condition" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea rows="1" placeholder="Sélection" data-i18n-ph="ph_selection" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
       <div class="triangles">
         <svg>
@@ -106,8 +111,8 @@
       </div>
       <div class="decision-branches">
         <div class="decision-branch">
-          <textarea rows="1" placeholder="True" ondrop="return false;" oninput="textareaResize(event);"
-            ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          <textarea rows="1" placeholder="Vrai" data-i18n-ph="ph_true" ondrop="return false;"
+            oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
 
           <div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)"
@@ -115,16 +120,16 @@
           </div>
         </div>
         <div class="decision-branch">
-          <textarea rows="1" placeholder="False" ondrop="return false;" oninput="textareaResize(event);"
-            ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          <textarea rows="1" placeholder="Faux" data-i18n-ph="ph_false" ondrop="return false;"
+            oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
           <div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)"
             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
           </div>
         </div>
         <div class="decision-branch">
-          <textarea rows="1" placeholder="Default" ondrop="return false;" oninput="textareaResize(event);"
-            ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          <textarea rows="1" placeholder="Défaut" data-i18n-ph="ph_default" ondrop="return false;"
+            oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
           <div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)"
             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
@@ -134,26 +139,46 @@
     </div>
 
     <div class="dblock decision-item" draggable="true" ondragstart="drag(event)">
-      <textarea rows="1" placeholder="Branch" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea rows="1" placeholder="Branche" data-i18n-ph="ph_branch" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
-    <h2>Iteration</h2>
+    <h2 data-i18n="heading_for_loop">Boucle</h2>
 
-    <div class="dblock iteration" draggable="true" ondragstart="drag(event)">
+    <div class="dblock iteration for-loop" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea class="left-ta rewh-ta" rows="1" placeholder="Condition" ondrop="return false;"
-        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
-        onfocusout="enableDraggableParent(event);"></textarea>
+      <div class="for-header">
+        <textarea class="left-ta rewh-ta for-start" rows="1" placeholder="i = 1" ondrop="return false;"
+          oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+        <span class="for-sep" data-i18n="sep_for">à</span>
+        <textarea class="left-ta rewh-ta for-end" rows="1" placeholder="10" ondrop="return false;"
+          oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+      </div>
       <div class="droparea drop-before-end drop-iteration" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
     </div>
 
-    <h2>Repeat-While</h2>
+    <h2 data-i18n="heading_while">Tant que</h2>
+
+    <div class="dblock iteration" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea class="left-ta rewh-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition"
+        ondrop="return false;" oninput="textareaResize(event);" ondragstart="return false;"
+        onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);"></textarea>
+      <div class="droparea drop-before-end drop-iteration" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+    </div>
+
+    <h2 data-i18n="heading_until">Jusqu'à</h2>
     <div class="dblock repeatwhile" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
@@ -161,32 +186,32 @@
       <div class="droparea drop-before-end drop-repeatwhile" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea class="left-ta" rows="1" placeholder="Condition" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea class="left-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
 
 
-    <h2>Begin-End</h2>
+    <h2 data-i18n="heading_endless">Sans fin</h2>
     <div class="dblock begin-end" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea class="left-ta" rows="1" placeholder="Condition" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea class="left-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
       <div class="droparea drop-before-end drop-begin-end" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea class="left-ta" rows="1" placeholder="Condition" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea class="left-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
 
 
-    <h2>Parallel Processing</h2>
+    <h2 data-i18n="heading_parallel">Traitement parallèle</h2>
 
     <div class="dblock decision parallel" draggable="true" ondragstart="drag(event)" ondrop="parallelDrop(event);">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
@@ -229,9 +254,99 @@
 
 
     <div class="dblock parallel-item" draggable="true" ondragstart="drag(event)">
-      <textarea rows="1" placeholder="Parallel Block" ondrop="return false;" oninput="textareaResize(event);"
-        ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+      <textarea rows="1" placeholder="bloc parallèle" data-i18n-ph="ph_parallel_block" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);"></textarea>
+    </div>
+  </div>
+
+  <div class="canvas-controls">
+    <button title="Zoomer (+)" data-i18n-title="title_zoom_in" onclick="zoomInCanvas();">+</button>
+    <button title="Dézoomer (-)" data-i18n-title="title_zoom_out" onclick="zoomOutCanvas();">-</button>
+    <button title="Centrer le schéma" data-i18n-title="title_center" onclick="centerCanvas();">🎯</button>
+  </div>
+
+  <div id="context-menu" class="context-menu hidden">
+    <div class="context-menu-item remove-item" onclick="removeSelectedFromContextMenu()">
+      <span class="icon">🗑️</span> <span data-i18n="ctx_delete">Supprimer ce bloc</span>
+    </div>
+
+    <div class="context-menu-separator"></div>
+
+    <div class="context-menu-item has-submenu" id="submenu-before">
+      <span class="icon">⬆️</span> <span data-i18n="ctx_add_before">Ajouter avant...</span>
+      <span class="arrow">▶</span>
+      <div class="context-submenu">
+        <div class="context-menu-item" data-type="process" onclick="addElementFromContextMenu('process', 'before')">
+          <span data-i18n="ctx_instruction">Instruction</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-two"
+          onclick="addElementFromContextMenu('decision-two', 'before')"><span
+            data-i18n="ctx_alternative">Alternative</span></div>
+        <div class="context-menu-item" data-type="decision" onclick="addElementFromContextMenu('decision', 'before')">
+          <span data-i18n="ctx_selection">Sélection</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-item"
+          onclick="addElementFromContextMenu('decision-item', 'before')"><span data-i18n="ctx_selection_branch">Branche
+            (Sélection)</span></div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="for-loop" onclick="addElementFromContextMenu('for-loop', 'before')">
+          <span data-i18n="ctx_for_loop">Boucle (Pour)</span>
+        </div>
+        <div class="context-menu-item" data-type="iteration" onclick="addElementFromContextMenu('iteration', 'before')">
+          <span data-i18n="ctx_while">Tant que</span>
+        </div>
+        <div class="context-menu-item" data-type="repeatwhile"
+          onclick="addElementFromContextMenu('repeatwhile', 'before')"><span data-i18n="ctx_until">Jusqu'à</span></div>
+        <div class="context-menu-item" data-type="begin-end" onclick="addElementFromContextMenu('begin-end', 'before')">
+          <span data-i18n="ctx_endless">Sans fin</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="parallel" onclick="addElementFromContextMenu('parallel', 'before')">
+          <span data-i18n="ctx_parallel">Traitement parallèle</span>
+        </div>
+        <div class="context-menu-item" data-type="parallel-item"
+          onclick="addElementFromContextMenu('parallel-item', 'before')"><span data-i18n="ctx_parallel_branch">Branche
+            (Parallèle)</span></div>
+      </div>
+    </div>
+
+    <div class="context-menu-item has-submenu" id="submenu-after">
+      <span class="icon">⬇️</span> <span data-i18n="ctx_add_after">Ajouter après...</span>
+      <span class="arrow">▶</span>
+      <div class="context-submenu">
+        <div class="context-menu-item" data-type="process" onclick="addElementFromContextMenu('process', 'after')">
+          <span data-i18n="ctx_instruction">Instruction</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-two"
+          onclick="addElementFromContextMenu('decision-two', 'after')"><span
+            data-i18n="ctx_alternative">Alternative</span></div>
+        <div class="context-menu-item" data-type="decision" onclick="addElementFromContextMenu('decision', 'after')">
+          <span data-i18n="ctx_selection">Sélection</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-item"
+          onclick="addElementFromContextMenu('decision-item', 'after')"><span data-i18n="ctx_selection_branch">Branche
+            (Sélection)</span></div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="for-loop" onclick="addElementFromContextMenu('for-loop', 'after')">
+          <span data-i18n="ctx_for_loop">Boucle (Pour)</span>
+        </div>
+        <div class="context-menu-item" data-type="iteration" onclick="addElementFromContextMenu('iteration', 'after')">
+          <span data-i18n="ctx_while">Tant que</span>
+        </div>
+        <div class="context-menu-item" data-type="repeatwhile"
+          onclick="addElementFromContextMenu('repeatwhile', 'after')"><span data-i18n="ctx_until">Jusqu'à</span></div>
+        <div class="context-menu-item" data-type="begin-end" onclick="addElementFromContextMenu('begin-end', 'after')">
+          <span data-i18n="ctx_endless">Sans fin</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="parallel" onclick="addElementFromContextMenu('parallel', 'after')">
+          <span data-i18n="ctx_parallel">Traitement parallèle</span>
+        </div>
+        <div class="context-menu-item" data-type="parallel-item"
+          onclick="addElementFromContextMenu('parallel-item', 'after')"><span data-i18n="ctx_parallel_branch">Branche
+            (Parallèle)</span></div>
+      </div>
     </div>
   </div>
 </body>

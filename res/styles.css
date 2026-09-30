@@ -72,19 +72,47 @@ body {
 #sidebar {
   background-color: white;
   border: 5px solid black;
+  box-sizing: border-box;
   width: 20%;
   right: 0;
-  margin-left: auto;
+  margin: 0;
   position: fixed;
-  height: 100vh;
-  overflow-y: scroll;
-  top: 0;
+  top: 90px;
+  bottom: 10px;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   z-index: 10000;
+  padding-bottom: 2rem;
+  scrollbar-width: auto;
+  scrollbar-color: #5171A5 #f1f1f1;
+}
+
+/* Sidebar scrollbar styling */
+#sidebar::-webkit-scrollbar {
+  width: 14px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-left: 1px solid #ccc;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #5171A5;
+  border-radius: 7px;
+  border: 2px solid #f1f1f1;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: #3b537a;
 }
 
 #sidebar .dblock {
   position: static;
-  margin: 1rem 2rem;
+  margin: 1rem auto;
+  max-width: calc(100% - 1.5rem);
+  box-sizing: border-box;
   display: block;
 }
 
@@ -294,6 +322,28 @@ body {
   padding-left: 1rem;
 }
 
+.iteration.for-loop .for-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  box-sizing: border-box;
+}
+
+.iteration.for-loop .for-header textarea {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 3.5rem;
+  max-width: 3rem;
+  text-align: center;
+}
+
+.iteration.for-loop .for-header .for-sep {
+  user-select: none;
+  font-weight: bold;
+  color: #7f7f7f;
+}
 
 .iteration .drop-iteration {
   margin: 0 !important;
@@ -501,6 +551,155 @@ svg line {
   left: -142px;
 }
 
+/* CONTEXT MENU */
+.context-menu {
+  position: fixed;
+  z-index: 20000;
+  background-color: #ffffff;
+  border: 2px solid #5171A5;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 6px 0;
+  min-width: 220px;
+  user-select: none;
+}
+
+.context-menu.hidden {
+  display: none;
+}
+
+.context-menu-header {
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #5171A5;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 4px;
+}
+
+.context-menu-item {
+  position: relative;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.context-menu-item .arrow {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.context-menu-item .icon {
+  font-size: 16px;
+}
+
+.context-menu-item:hover {
+  background-color: #5171A5;
+  color: #ffffff;
+}
+
+.context-menu-item.remove-item:hover {
+  background-color: #d9534f;
+  color: #ffffff;
+}
+
+.context-menu-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.context-menu-item.disabled:hover {
+  background-color: transparent;
+  color: #333333;
+}
+
+/* SUBMENU */
+.context-submenu {
+  display: none;
+  position: absolute;
+  top: -4px;
+  left: 100%;
+  background-color: #ffffff;
+  border: 2px solid #5171A5;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 6px 0;
+  min-width: 220px;
+  z-index: 20001;
+}
+
+.context-menu-item.has-submenu:hover>.context-submenu {
+  display: block;
+}
+
+.context-menu-separator {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 4px 0;
+}
+
+/* CANVAS CONTROLS WIDGET */
+.canvas-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 15000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px;
+  border-radius: 8px;
+  border: 2px solid #5171A5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.canvas-controls button {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid #5171A5;
+  background-color: #ffffff;
+  color: #5171A5;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.canvas-controls button:hover {
+  background-color: #5171A5;
+  color: #ffffff;
+}
+
+/* LANGUAGE SELECTOR */
+.lang-select {
+  float: right;
+  margin-right: 1rem;
+  background-color: #ffffff;
+  color: #5171A5;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.lang-select:hover {
+  background-color: #f0f4f9;
+}
 
 @media print {
   .dblock {}
@@ -509,11 +708,10 @@ svg line {
     max-width: 100%;
   }
 
-  .menu {
-    display: none;
-  }
-
-  #sidebar {
+  .menu,
+  #sidebar,
+  .context-menu,
+  .canvas-controls {
     display: none;
   }
 

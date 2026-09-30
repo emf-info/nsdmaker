@@ -96,7 +96,8 @@ function clearCanvas() {
   undoList = [];
   redoList = [];
 
-  if (confirm("Unsaved changes will be lost.")) {
+  let msg = (translations[currentLang] && translations[currentLang].confirm_clear) || "Unsaved changes will be lost.";
+  if (confirm(msg)) {
     clrCanvas();
   }
 }
@@ -143,6 +144,65 @@ document.addEventListener('keydown', function(event) {
 
 setAllTriangles();
 
+let isSpacePressed = false;
+let isCustomPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let panStartTransformX = 0;
+let panStartTransformY = 0;
+
+document.addEventListener("keydown", function(e) {
+  if (e.code === "Space" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "INPUT") {
+    isSpacePressed = true;
+    document.body.style.cursor = "grab";
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("keyup", function(e) {
+  if (e.code === "Space") {
+    isSpacePressed = false;
+    if (!isCustomPanning) {
+      document.body.style.cursor = "";
+    }
+  }
+});
+
+document.addEventListener("mousedown", function(e) {
+  // Middle mouse button (button 1) OR Space + Left click (button 0)
+  if (e.button === 1 || (isSpacePressed && e.button === 0)) {
+    if (document.activeElement && document.activeElement.tagName === "TEXTAREA") {
+      document.activeElement.blur();
+    }
+    isCustomPanning = true;
+    panStartX = e.clientX;
+    panStartY = e.clientY;
+    if (instance) {
+      let currentTransform = instance.getTransform();
+      panStartTransformX = currentTransform.x;
+      panStartTransformY = currentTransform.y;
+    }
+    document.body.style.cursor = "grabbing";
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("mousemove", function(e) {
+  if (isCustomPanning && instance) {
+    let dx = e.clientX - panStartX;
+    let dy = e.clientY - panStartY;
+    instance.moveTo(panStartTransformX + dx, panStartTransformY + dy);
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("mouseup", function(e) {
+  if (isCustomPanning) {
+    isCustomPanning = false;
+    document.body.style.cursor = isSpacePressed ? "grab" : "";
+  }
+});
+
 var canvas = document.getElementById("canvas");
 
 let instance = panzoom(canvas, {
@@ -161,16 +221,33 @@ let instance = panzoom(canvas, {
     return shouldIgnore;
   },
   filterKey: function(/* e, dx, dy, dz */) {
-    // don't let panzoom handle this event:
     return true;
   }
 });
 
 let origin = instance.getTransformOrigin();
 
-
 function centerCanvas() {
-  instance.smoothMoveTo(0, 0);
+  if (instance) {
+    instance.moveTo(0, 0);
+    instance.zoomAbs(0, 0, 1);
+  }
+}
+
+function zoomInCanvas() {
+  if (instance) {
+    let transform = instance.getTransform();
+    let newScale = Math.min(2, transform.scale * 1.25);
+    instance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, newScale);
+  }
+}
+
+function zoomOutCanvas() {
+  if (instance) {
+    let transform = instance.getTransform();
+    let newScale = Math.max(0.3, transform.scale / 1.25);
+    instance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, newScale);
+  }
 }
 
 lastDrop = Date.now()
@@ -683,6 +760,10 @@ function resetSelectedElement() {
 }
 
 document.addEventListener("mousedown", (event) => {
+  if (event.button !== 0 || isSpacePressed || isCustomPanning) {
+    return;
+  }
+
   if (event.target.tagName === "BUTTON") {
     return;
   }
@@ -715,6 +796,241 @@ document.addEventListener("mousedown", (event) => {
     selectedElement = event.target.parentElement;
     selectedElement.style.backgroundColor = "#ffebeb";
 
+  }
+});
+
+
+let contextMenuTargetBlock = null;
+
+document.addEventListener("contextmenu", function(event) {
+  if (event.target.tagName === "BUTTON") {
+    return;
+  }
+
+  if (!isElementInRblock(event.target)) {
+    hideContextMenu();
+    return;
+  }
+
+  event.preventDefault();
+
+  let targetBlock = event.target.classList.contains("dblock") ? event.target : getParentDBlock(event.target);
+  if (!targetBlock) {
+    hideContextMenu();
+    return;
+  }
+
+  contextMenuTargetBlock = targetBlock;
+
+  if (selectedElement != null) {
+    selectedElement.style.backgroundColor = "";
+  }
+  selectedElement = targetBlock;
+  selectedElement.style.backgroundColor = "#ffebeb";
+
+  showContextMenu(event.clientX, event.clientY, targetBlock);
+});
+
+function showContextMenu(x, y, block) {
+  let menu = document.getElementById("context-menu");
+  if (!menu) return;
+
+  let removeBtn = menu.querySelector(".remove-item");
+  if (removeBtn) {
+    if (block.id === "rblock") {
+      removeBtn.classList.add("disabled");
+    } else {
+      removeBtn.classList.remove("disabled");
+    }
+  }
+
+  let selBranchItems = menu.querySelectorAll('[data-type="decision-item"]');
+  let parBranchItems = menu.querySelectorAll('[data-type="parallel-item"]');
+
+  let inDecision = (block.classList.contains("decision") && !block.classList.contains("parallel"))
+    || (block.closest && block.closest(".decision:not(.parallel)") !== null);
+  let inParallel = block.classList.contains("parallel")
+    || (block.closest && block.closest(".parallel") !== null);
+
+  selBranchItems.forEach(item => {
+    if (inDecision) item.classList.remove("disabled");
+    else item.classList.add("disabled");
+  });
+
+  parBranchItems.forEach(item => {
+    if (inParallel) item.classList.remove("disabled");
+    else item.classList.add("disabled");
+  });
+
+  menu.classList.remove("hidden");
+
+  let menuWidth = menu.offsetWidth || 220;
+  let menuHeight = menu.offsetHeight || 220;
+  let posX = (x + menuWidth > window.innerWidth) ? (x - menuWidth) : x;
+  let posY = (y + menuHeight > window.innerHeight) ? (y - menuHeight) : y;
+
+  menu.style.left = posX + "px";
+  menu.style.top = posY + "px";
+
+  let submenus = menu.querySelectorAll(".context-submenu");
+  submenus.forEach(sub => {
+    if (posX + menuWidth + 220 > window.innerWidth) {
+      sub.style.left = "auto";
+      sub.style.right = "100%";
+    } else {
+      sub.style.left = "100%";
+      sub.style.right = "auto";
+    }
+  });
+}
+
+function hideContextMenu() {
+  let menu = document.getElementById("context-menu");
+  if (menu) {
+    menu.classList.add("hidden");
+  }
+  contextMenuTargetBlock = null;
+}
+
+function removeSelectedFromContextMenu() {
+  if (!contextMenuTargetBlock || contextMenuTargetBlock.id === "rblock") {
+    hideContextMenu();
+    return;
+  }
+  selectedElement = contextMenuTargetBlock;
+  removeElement();
+  hideContextMenu();
+}
+
+function addElementFromContextMenu(type, position) {
+  position = position || 'after';
+
+  if (!contextMenuTargetBlock) {
+    hideContextMenu();
+    return;
+  }
+
+  let targetBlock = contextMenuTargetBlock;
+
+  let inDecision = (targetBlock.classList.contains("decision") && !targetBlock.classList.contains("parallel"))
+    || (targetBlock.closest && targetBlock.closest(".decision:not(.parallel)") !== null);
+  let inParallel = targetBlock.classList.contains("parallel")
+    || (targetBlock.closest && targetBlock.closest(".parallel") !== null);
+
+  if (type === "decision-item" && !inDecision) {
+    hideContextMenu();
+    return;
+  }
+  if (type === "parallel-item" && !inParallel) {
+    hideContextMenu();
+    return;
+  }
+
+  hideContextMenu();
+
+  let sidebar = document.getElementById("sidebar");
+  let template = null;
+
+  if (type === "process") {
+    template = sidebar.querySelector(".dblock.process");
+  } else if (type === "decision-two") {
+    template = sidebar.querySelector(".dblock.decision.decision-two");
+  } else if (type === "decision") {
+    template = sidebar.querySelector(".dblock.decision:not(.decision-two):not(.parallel)");
+  } else if (type === "decision-item") {
+    template = sidebar.querySelector(".dblock.decision-item");
+  } else if (type === "for-loop") {
+    template = sidebar.querySelector(".dblock.iteration.for-loop");
+  } else if (type === "iteration") {
+    template = sidebar.querySelector(".dblock.iteration:not(.for-loop)");
+  } else if (type === "repeatwhile") {
+    template = sidebar.querySelector(".dblock.repeatwhile");
+  } else if (type === "begin-end") {
+    template = sidebar.querySelector(".dblock.begin-end");
+  } else if (type === "parallel") {
+    template = sidebar.querySelector(".dblock.parallel");
+  } else if (type === "parallel-item") {
+    template = sidebar.querySelector(".dblock.parallel-item");
+  }
+
+  if (!template) return;
+
+  redoList = [];
+  pushToUndo();
+
+  if (type === "decision-item") {
+    let parent = (targetBlock.classList.contains("decision") && !targetBlock.classList.contains("parallel"))
+      ? targetBlock
+      : (targetBlock.closest ? targetBlock.closest(".decision:not(.parallel)") : null);
+    if (parent) {
+      let branches = parent.getElementsByClassName("decision-branches")[0];
+      if (branches && branches.lastElementChild) {
+        let lastBranch = branches.lastElementChild;
+        let copy = lastBranch.cloneNode(true);
+        copy.lastElementChild.innerHTML = '';
+        let ta = copy.querySelector("textarea");
+        if (ta) {
+          ta.value = '';
+          ta.placeholder = "Défaut";
+        }
+        lastBranch.after(copy);
+      }
+    }
+  } else if (type === "parallel-item") {
+    let parent = targetBlock.classList.contains("parallel")
+      ? targetBlock
+      : (targetBlock.closest ? targetBlock.closest(".parallel") : null);
+    if (parent) {
+      let branches = parent.getElementsByClassName("decision-branches")[0];
+      if (branches && branches.lastElementChild) {
+        let lastBranch = branches.lastElementChild;
+        let copy = lastBranch.cloneNode(true);
+        let innerDa = copy.querySelector(".droparea");
+        if (innerDa) innerDa.innerHTML = '';
+        lastBranch.after(copy);
+      }
+    }
+  } else {
+    let clone = template.cloneNode(true);
+
+    if (targetBlock.id === "rblock") {
+      let dropArea = targetBlock.querySelector(".droparea.drop-before-end");
+      if (dropArea) {
+        if (position === 'before' && dropArea.firstElementChild) {
+          dropArea.firstElementChild.before(clone);
+        } else {
+          dropArea.appendChild(clone);
+        }
+        setDropareaDefaultColor(dropArea);
+        dropArea.style.borderColor = "transparent";
+      }
+    } else {
+      if (position === 'before') {
+        targetBlock.before(clone);
+      } else {
+        targetBlock.after(clone);
+      }
+      let parentDropArea = clone.parentElement;
+      if (parentDropArea && parentDropArea.classList.contains("droparea")) {
+        setDropareaDefaultColor(parentDropArea);
+        parentDropArea.style.borderColor = "transparent";
+      }
+    }
+  }
+
+  setAllTriangles();
+}
+
+document.addEventListener("click", function(event) {
+  let menu = document.getElementById("context-menu");
+  if (menu && !menu.contains(event.target)) {
+    hideContextMenu();
+  }
+});
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape") {
+    hideContextMenu();
   }
 });
 
@@ -915,6 +1231,7 @@ function dragElement(elmnt) {
     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
   }
 
+/*
   function closeDragElement() {
     // stop moving when mouse button is released:
     document.onmouseup = null;
@@ -923,3 +1240,201 @@ function dragElement(elmnt) {
 }
 
 */
+
+/* INTERNATIONALIZATION (i18n) */
+const translations = {
+  fr: {
+    btn_open: "Ouvrir <b>[^O]</b>",
+    btn_save: "Enregistrer <b>[^S]</b>",
+    btn_delete: "Supprimer <b>[DEL]</b>",
+    btn_center: "Centrer <b>[^A]</b>",
+    btn_undo: "Annuler <b>[^Z]</b>",
+    btn_redo: "Rétablir <b>[^Y]</b>",
+    btn_export: "Exporter l'image <b>[^E]</b>",
+    btn_clear: "Tout effacer <b>[^DEL]</b>",
+
+    heading_instruction: "Instruction",
+    heading_alternative: "Alternative",
+    heading_selection: "Sélection",
+    heading_for_loop: "Boucle",
+    heading_while: "Tant que",
+    heading_until: "Jusqu'à",
+    heading_endless: "Sans fin",
+    heading_parallel: "Traitement parallèle",
+
+    ph_program: "Programme",
+    ph_instruction: "Instruction",
+    ph_alternative: "Alternative",
+    ph_true: "Vrai",
+    ph_false: "Faux",
+    ph_selection: "Sélection",
+    ph_default: "Défaut",
+    ph_branch: "Branche",
+    ph_condition: "Condition",
+    ph_parallel_block: "Bloc parallèle",
+    sep_for: "à",
+
+    ctx_delete: "Supprimer ce bloc",
+    ctx_add_before: "Ajouter avant...",
+    ctx_add_after: "Ajouter après...",
+    ctx_instruction: "Instruction",
+    ctx_alternative: "Alternative",
+    ctx_selection: "Sélection",
+    ctx_selection_branch: "Branche (Sélection)",
+    ctx_for_loop: "Boucle (Pour)",
+    ctx_while: "Tant que",
+    ctx_until: "Jusqu'à",
+    ctx_endless: "Sans fin",
+    ctx_parallel: "Traitement parallèle",
+    ctx_parallel_branch: "Branche (Parallèle)",
+
+    title_zoom_in: "Zoomer (+)",
+    title_zoom_out: "Dézoomer (-)",
+    title_center: "Centrer le schéma",
+
+    confirm_clear: "Les modifications non enregistrées seront perdues. Voulez-vous continuer ?"
+  },
+  en: {
+    btn_open: "Open <b>[^O]</b>",
+    btn_save: "Save <b>[^S]</b>",
+    btn_delete: "Delete <b>[DEL]</b>",
+    btn_center: "Center <b>[^A]</b>",
+    btn_undo: "Undo <b>[^Z]</b>",
+    btn_redo: "Redo <b>[^Y]</b>",
+    btn_export: "Export image <b>[^E]</b>",
+    btn_clear: "Clear all <b>[^DEL]</b>",
+
+    heading_instruction: "Instruction",
+    heading_alternative: "Alternative",
+    heading_selection: "Selection",
+    heading_for_loop: "Loop (For)",
+    heading_while: "While",
+    heading_until: "Until",
+    heading_endless: "Endless",
+    heading_parallel: "Parallel processing",
+
+    ph_program: "Program",
+    ph_instruction: "Instruction",
+    ph_alternative: "Alternative",
+    ph_true: "True",
+    ph_false: "False",
+    ph_selection: "Selection",
+    ph_default: "Default",
+    ph_branch: "Branch",
+    ph_condition: "Condition",
+    ph_parallel_block: "Parallel Block",
+    sep_for: "to",
+
+    ctx_delete: "Delete this block",
+    ctx_add_before: "Add before...",
+    ctx_add_after: "Add after...",
+    ctx_instruction: "Instruction",
+    ctx_alternative: "Alternative",
+    ctx_selection: "Selection",
+    ctx_selection_branch: "Branch (Selection)",
+    ctx_for_loop: "Loop (For)",
+    ctx_while: "While",
+    ctx_until: "Until",
+    ctx_endless: "Endless",
+    ctx_parallel: "Parallel processing",
+    ctx_parallel_branch: "Branch (Parallel)",
+
+    title_zoom_in: "Zoom in (+)",
+    title_zoom_out: "Zoom out (-)",
+    title_center: "Center diagram",
+
+    confirm_clear: "Unsaved changes will be lost. Do you want to proceed?"
+  },
+  de: {
+    btn_open: "Öffnen <b>[^O]</b>",
+    btn_save: "Speichern <b>[^S]</b>",
+    btn_delete: "Löschen <b>[DEL]</b>",
+    btn_center: "Zentrieren <b>[^A]</b>",
+    btn_undo: "Rückgängig <b>[^Z]</b>",
+    btn_redo: "Wiederholen <b>[^Y]</b>",
+    btn_export: "Bild exportieren <b>[^E]</b>",
+    btn_clear: "Alles löschen <b>[^DEL]</b>",
+
+    heading_instruction: "Anweisung",
+    heading_alternative: "Alternativ",
+    heading_selection: "Auswahl",
+    heading_for_loop: "Schleife (Für)",
+    heading_while: "Solange",
+    heading_until: "Bis",
+    heading_endless: "Endlos",
+    heading_parallel: "Parallele Verarbeitung",
+
+    ph_program: "Programm",
+    ph_instruction: "Anweisung",
+    ph_alternative: "Alternativ",
+    ph_true: "Wahr",
+    ph_false: "Falsch",
+    ph_selection: "Auswahl",
+    ph_default: "Standard",
+    ph_branch: "Zweig",
+    ph_condition: "Bedingung",
+    ph_parallel_block: "Paralleler Block",
+    sep_for: "bis",
+
+    ctx_delete: "Diesen Block löschen",
+    ctx_add_before: "Davor hinzufügen...",
+    ctx_add_after: "Danach hinzufügen...",
+    ctx_instruction: "Anweisung",
+    ctx_alternative: "Alternativ",
+    ctx_selection: "Auswahl",
+    ctx_selection_branch: "Zweig (Auswahl)",
+    ctx_for_loop: "Schleife (Für)",
+    ctx_while: "Solange",
+    ctx_until: "Bis",
+    ctx_endless: "Endlos",
+    ctx_parallel: "Parallele Verarbeitung",
+    ctx_parallel_branch: "Zweig (Parallel)",
+
+    title_zoom_in: "Vergrößern (+)",
+    title_zoom_out: "Verkleinern (-)",
+    title_center: "Diagramm zentrieren",
+
+    confirm_clear: "Ungespeicherte Änderungen gehen verloren. Möchten Sie fortfahren?"
+  }
+};
+
+let currentLang = localStorage.getItem("nsd_lang") || "fr";
+
+function setLanguage(lang) {
+  if (!translations[lang]) lang = "fr";
+  currentLang = lang;
+  localStorage.setItem("nsd_lang", lang);
+
+  let langSelect = document.getElementById("lang-select");
+  if (langSelect) {
+    langSelect.value = lang;
+  }
+
+  let dict = translations[lang];
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    let key = el.getAttribute("data-i18n");
+    if (dict[key]) {
+      el.innerHTML = dict[key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+    let key = el.getAttribute("data-i18n-ph");
+    if (dict[key]) {
+      el.placeholder = dict[key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-title]").forEach(el => {
+    let key = el.getAttribute("data-i18n-title");
+    if (dict[key]) {
+      el.title = dict[key];
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  setLanguage(currentLang);
+});
+setLanguage(currentLang);
