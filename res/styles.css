@@ -212,7 +212,10 @@ body {
   margin-right: auto;
   position: static;
   display: block;
-  width: fit-content;
+  width: 70vw;
+  min-width: 70vw;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 1rem;
 }
 
