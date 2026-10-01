@@ -738,15 +738,14 @@ function getProgramFileName() {
   let name = programTitle ? programTitle.value.trim() : "";
 
   name = name
-    .replace(/[<>:"/\\|?*\\u0000-\\u001F]/g, "")
-    .replace(/\\s+/g, "_")
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
+    .replace(/\s+/g, "_")
     .replace(/[. ]+$/g, "")
     .slice(0, 80)
     .replace(/^_+|_+$/g, "");
 
   return name || "programme";
 }
-
 function getImage() {
   const filename = getProgramFileName();
   resetSelectedElement();
