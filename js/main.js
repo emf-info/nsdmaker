@@ -733,18 +733,28 @@ function showParallelLines() {
 }
 
 
+function getProgramFileName() {
+  const programTitle = document.querySelector("#rblock > textarea");
+  let name = programTitle ? programTitle.value.trim() : "";
+
+  name = name
+    .replace(/[<>:"/\\|?*\\u0000-\\u001F]/g, "")
+    .replace(/\\s+/g, "_")
+    .replace(/[. ]+$/g, "")
+    .slice(0, 80)
+    .replace(/^_+|_+$/g, "");
+
+  return name || "programme";
+}
+
 function getImage() {
+  const filename = getProgramFileName();
   resetSelectedElement();
   document.getElementById("png").disabled = true;
   instance.on('zoomend', function(e) {
     setAllTextareaValuesToPlaceholder();
     html2canvas(document.querySelector("#rblock")).then(canvas => {
       let rootElement = document.getElementById("rblock");
-
-      let filename = rootElement.querySelector("textarea").value;
-      if (filename === '') {
-        filename = "diagram";
-      }
 
       var img = canvas.toDataURL("image/png");
 
@@ -1263,12 +1273,8 @@ function save() {
   savedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(savedRoot.outerHTML));
 
-  let filename = rootElement.querySelector("textarea").value;
-
-  if (filename === '') {
-    filename = "diagram";
-  }
-  element.setAttribute('download', filename + ".html");
+  const filename = getProgramFileName();
+  element.setAttribute('download', filename + ".nsd");
 
   element.style.display = 'none';
   document.body.appendChild(element);
