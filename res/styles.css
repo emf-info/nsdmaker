@@ -128,6 +128,30 @@ body {
   text-align: center;
 }
 
+/* Drag handle for blocks already placed in the program */
+#rblock .dblock:not(.program)::after {
+  content: "⠿";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #555;
+  font: bold 22px/1 sans-serif;
+  cursor: grab;
+  user-select: none;
+}
+
+#rblock .dblock:not(.program):active::after {
+  cursor: grabbing;
+}
+
 .dblock {
   position: absolute;
   background-color: white;
