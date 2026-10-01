@@ -323,9 +323,11 @@ body {
   text-align: center;
 }
 
-/* Align the caret with Courier New glyphs in the main decision labels. */
+/* Keep the caret and Courier New glyphs on a compact, consistent line. */
 .decision > textarea {
-  line-height: 1.35;
+  line-height: 24px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .decision textarea.condition {
