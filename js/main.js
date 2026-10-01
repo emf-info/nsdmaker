@@ -408,20 +408,36 @@ let draggedBlock = null;
 let draggedFromProgram = false;
 let armedDragBlock = null;
 
+function ensureProgramDragHandles(root = document) {
+  root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
+    if (block.querySelector(":scope > .drag-handle")) return;
+    const handle = document.createElement("span");
+    handle.className = "drag-handle";
+    handle.textContent = "↕";
+    handle.title = "Déplacer ce bloc";
+    handle.setAttribute("aria-label", "Déplacer ce bloc");
+    handle.draggable = true;
+    block.insertBefore(handle, block.firstChild);
+  });
+}
+
+ensureProgramDragHandles();
+new MutationObserver(() => ensureProgramDragHandles()).observe(
+  document.getElementById("canvas"),
+  { childList: true, subtree: true }
+);
+
 // In the program, a block can only be picked up from its visible handle.
 // Sidebar blocks remain draggable from anywhere.
 document.addEventListener("mousedown", function(event) {
   armedDragBlock = null;
   if (event.button !== 0) return;
 
-  const block = event.target.closest ? event.target.closest("#rblock .dblock") : null;
-  if (!block || block.id === "rblock") return;
+  const handle = event.target.closest ? event.target.closest("#rblock .drag-handle") : null;
+  if (!handle) return;
 
-  const rect = block.getBoundingClientRect();
-  const handleSize = 32;
-  if (event.clientX >= rect.right - handleSize && event.clientY <= rect.top + handleSize) {
-    armedDragBlock = block;
-  }
+  const block = handle.closest(".dblock");
+  if (block && block.id !== "rblock") armedDragBlock = block;
 });
 
 function drag(ev) {
@@ -432,15 +448,17 @@ function drag(ev) {
   }
 
   // Sidebar blocks are palette templates and should be copied into the program.
-  // In-program blocks can only be dragged from their top-right handle.
+  // In-program blocks can only be dragged from their visible handle.
   draggedFromProgram = isElementInRblock(block);
-  if (draggedFromProgram && armedDragBlock !== block) {
+  if (draggedFromProgram && (armedDragBlock !== block || !ev.target.closest(".drag-handle"))) {
     ev.preventDefault();
     return;
   }
   draggedBlock = draggedFromProgram ? block : null;
   ev.dataTransfer.effectAllowed = draggedFromProgram ? "move" : "copy";
-  ev.dataTransfer.setData("text/plain", block.outerHTML);
+  const serializedBlock = block.cloneNode(true);
+  serializedBlock.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+  ev.dataTransfer.setData("text/plain", serializedBlock.outerHTML);
 }
 
 function drop(ev) {
@@ -1198,7 +1216,9 @@ function save() {
   let rootElement = document.getElementById("rblock");
 
   var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(rootElement.outerHTML));
+  const savedRoot = rootElement.cloneNode(true);
+  savedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(savedRoot.outerHTML));
 
   let filename = rootElement.querySelector("textarea").value;
 
