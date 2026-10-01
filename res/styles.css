@@ -42,6 +42,7 @@ h2:not(:first-child) {
 
 
 textarea {
+  font-family: "Courier New", Courier, monospace;
   /* max-width: 20vw; */
   width: 100%;
 }
