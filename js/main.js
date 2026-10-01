@@ -404,13 +404,26 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
+let draggedBlock = null;
+
 function drag(ev) {
-  ev.target.style.backgroundColor = "white";
-  ev.dataTransfer.setData("text", ev.target.outerHTML);
+  const block = ev.target.closest ? ev.target.closest(".dblock") : ev.target;
+  if (!block || block.id === "rblock" || !isElementInRblock(block)) {
+    ev.preventDefault();
+    return;
+  }
+
+  draggedBlock = block;
+  ev.dataTransfer.effectAllowed = "move";
+  ev.dataTransfer.setData("text/plain", block.outerHTML);
 }
 
 function drop(ev) {
   if (!isElementInRblock(ev.target)) {
+    return;
+  }
+  ev.preventDefault();
+  if (draggedBlock && (ev.target === draggedBlock || draggedBlock.contains(ev.target))) {
     return;
   }
 
@@ -435,8 +448,7 @@ function drop(ev) {
     redoList = [];
     pushToUndo();
 
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
+    var data = ev.dataTransfer.getData("text/plain");
 
     let newNode = null;
 
@@ -453,6 +465,16 @@ function drop(ev) {
       setFromUndo();
       newNode.remove();
     } else {
+      // Move existing program blocks instead of leaving a duplicate behind.
+      if (draggedBlock && draggedBlock !== newNode && draggedBlock.isConnected) {
+        const sourceArea = draggedBlock.parentElement;
+        if (sourceArea && sourceArea.classList.contains("droparea") && sourceArea.children.length === 1) {
+          setDropareaDefaultColor(sourceArea);
+        }
+        draggedBlock.remove();
+        draggedBlock = null;
+      }
+
       if (newNode.classList.contains("decision-item")) {
         setFromUndo();
         newNode.remove();
@@ -480,6 +502,10 @@ function drop(ev) {
   setAllTriangles();
 }
 
+document.addEventListener("dragend", function() {
+  draggedBlock = null;
+});
+
 function decisionDrop(ev) {
   if (!isElementInRblock(ev.target)) {
     return;
@@ -488,6 +514,11 @@ function decisionDrop(ev) {
   setDropareaDefaultColor(ev.target);
   unselectAllElementsFromDroparea(ev.target);
   unsetDBE(ev.target);
+  ev.preventDefault();
+
+  // Special drop zones add branches from the sidebar. Existing program blocks
+  // are moved through normal drop areas instead.
+  if (draggedBlock) return;
 
   d = Date.now()
   if (d - lastDrop < 1000) {
@@ -495,9 +526,7 @@ function decisionDrop(ev) {
   }
   lastDrop = d;
 
-  ev.preventDefault();
-
-  var data = ev.dataTransfer.getData("text");
+  var data = ev.dataTransfer.getData("text/plain");
 
   let parent = getParentDBlock(ev.target);
 
@@ -528,6 +557,11 @@ function parallelDrop(ev) {
   setDropareaDefaultColor(ev.target);
   unselectAllElementsFromDroparea(ev.target);
   unsetDBE(ev.target);
+  ev.preventDefault();
+
+  // Special drop zones add branches from the sidebar. Existing program blocks
+  // are moved through normal drop areas instead.
+  if (draggedBlock) return;
 
   d = Date.now()
   if (d - lastDrop < 1000) {
@@ -535,9 +569,7 @@ function parallelDrop(ev) {
   }
   lastDrop = d;
 
-  ev.preventDefault();
-
-  var data = ev.dataTransfer.getData("text");
+  var data = ev.dataTransfer.getData("text/plain");
 
   let parent = getParentDBlock(ev.target);
 
