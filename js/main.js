@@ -434,12 +434,12 @@ function ensureProgramDragHandles(root = document) {
       alignItems: "center",
       justifyContent: "center",
       boxSizing: "border-box",
-      border: "2px solid #ffffff",
-      borderRadius: "6px",
-      background: "#5171A5",
-      color: "#ffffff",
-      font: "bold 24px/1 Arial, sans-serif",
-      boxShadow: "0 1px 4px rgba(0, 0, 0, 0.35)",
+      border: "1px solid #b8b8b8",
+      borderRadius: "5px",
+      background: "#e6e6e6",
+      color: "#666666",
+      font: "bold 22px/1 Arial, sans-serif",
+      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.15)",
       cursor: "grab",
       userSelect: "none"
     });
