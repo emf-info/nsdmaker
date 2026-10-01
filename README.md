@@ -46,8 +46,8 @@ Le programme commence par un bloc racine. Sa largeur est conçue pour laisser de
 
 ### Ouvrir, enregistrer et exporter
 
-- **Ouvrir** : charge un schéma enregistré au format HTML.
-- **Enregistrer** : télécharge le schéma sous forme de fichier HTML.
+- **Ouvrir** : charge un fichier de schéma `.nsd` (son contenu est un document HTML).
+- **Enregistrer** : télécharge le schéma au format `.nsd`.
 - **Exporter l’image** : crée une image PNG du schéma.
 
 Les raccourcis clavier disponibles sont :
