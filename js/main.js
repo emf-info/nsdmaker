@@ -406,6 +406,23 @@ function allowDrop(ev) {
 
 let draggedBlock = null;
 let draggedFromProgram = false;
+let armedDragBlock = null;
+
+// In the program, a block can only be picked up from its visible handle.
+// Sidebar blocks remain draggable from anywhere.
+document.addEventListener("mousedown", function(event) {
+  armedDragBlock = null;
+  if (event.button !== 0) return;
+
+  const block = event.target.closest ? event.target.closest("#rblock .dblock") : null;
+  if (!block || block.id === "rblock") return;
+
+  const rect = block.getBoundingClientRect();
+  const handleSize = 32;
+  if (event.clientX >= rect.right - handleSize && event.clientY <= rect.top + handleSize) {
+    armedDragBlock = block;
+  }
+});
 
 function drag(ev) {
   const block = ev.target.closest ? ev.target.closest(".dblock") : ev.target;
@@ -415,8 +432,12 @@ function drag(ev) {
   }
 
   // Sidebar blocks are palette templates and should be copied into the program.
-  // Blocks already in the program are moved instead.
+  // In-program blocks can only be dragged from their top-right handle.
   draggedFromProgram = isElementInRblock(block);
+  if (draggedFromProgram && armedDragBlock !== block) {
+    ev.preventDefault();
+    return;
+  }
   draggedBlock = draggedFromProgram ? block : null;
   ev.dataTransfer.effectAllowed = draggedFromProgram ? "move" : "copy";
   ev.dataTransfer.setData("text/plain", block.outerHTML);
@@ -510,6 +531,7 @@ function drop(ev) {
 document.addEventListener("dragend", function() {
   draggedBlock = null;
   draggedFromProgram = false;
+  armedDragBlock = null;
 });
 
 function decisionDrop(ev) {
