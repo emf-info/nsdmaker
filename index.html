@@ -271,6 +271,13 @@
       <span class="icon">🗑️</span> <span data-i18n="ctx_delete">Supprimer ce bloc</span>
     </div>
 
+    <div class="context-menu-item move-item" onclick="moveContextMenuBlock(-1)">
+      <span class="icon">⬆️</span> <span data-i18n="ctx_move_up">Déplacer vers le haut</span>
+    </div>
+    <div class="context-menu-item move-item" onclick="moveContextMenuBlock(1)">
+      <span class="icon">⬇️</span> <span data-i18n="ctx_move_down">Déplacer vers le bas</span>
+    </div>
+
     <div class="context-menu-separator"></div>
 
     <div class="context-menu-item has-submenu" id="submenu-before">
