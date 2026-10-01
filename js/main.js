@@ -405,16 +405,20 @@ function allowDrop(ev) {
 }
 
 let draggedBlock = null;
+let draggedFromProgram = false;
 
 function drag(ev) {
   const block = ev.target.closest ? ev.target.closest(".dblock") : ev.target;
-  if (!block || block.id === "rblock" || !isElementInRblock(block)) {
+  if (!block || block.id === "rblock") {
     ev.preventDefault();
     return;
   }
 
-  draggedBlock = block;
-  ev.dataTransfer.effectAllowed = "move";
+  // Sidebar blocks are palette templates and should be copied into the program.
+  // Blocks already in the program are moved instead.
+  draggedFromProgram = isElementInRblock(block);
+  draggedBlock = draggedFromProgram ? block : null;
+  ev.dataTransfer.effectAllowed = draggedFromProgram ? "move" : "copy";
   ev.dataTransfer.setData("text/plain", block.outerHTML);
 }
 
@@ -423,7 +427,7 @@ function drop(ev) {
     return;
   }
   ev.preventDefault();
-  if (draggedBlock && (ev.target === draggedBlock || draggedBlock.contains(ev.target))) {
+  if (draggedFromProgram && draggedBlock && (ev.target === draggedBlock || draggedBlock.contains(ev.target))) {
     return;
   }
 
@@ -466,13 +470,14 @@ function drop(ev) {
       newNode.remove();
     } else {
       // Move existing program blocks instead of leaving a duplicate behind.
-      if (draggedBlock && draggedBlock !== newNode && draggedBlock.isConnected) {
+      if (draggedFromProgram && draggedBlock && draggedBlock !== newNode && draggedBlock.isConnected) {
         const sourceArea = draggedBlock.parentElement;
         if (sourceArea && sourceArea.classList.contains("droparea") && sourceArea.children.length === 1) {
           setDropareaDefaultColor(sourceArea);
         }
         draggedBlock.remove();
         draggedBlock = null;
+        draggedFromProgram = false;
       }
 
       if (newNode.classList.contains("decision-item")) {
@@ -504,6 +509,7 @@ function drop(ev) {
 
 document.addEventListener("dragend", function() {
   draggedBlock = null;
+  draggedFromProgram = false;
 });
 
 function decisionDrop(ev) {
@@ -518,7 +524,7 @@ function decisionDrop(ev) {
 
   // Special drop zones add branches from the sidebar. Existing program blocks
   // are moved through normal drop areas instead.
-  if (draggedBlock) return;
+  if (draggedFromProgram) return;
 
   d = Date.now()
   if (d - lastDrop < 1000) {
