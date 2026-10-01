@@ -128,9 +128,8 @@ body {
   text-align: center;
 }
 
-/* Drag handle for blocks already placed in the program */
-#rblock .dblock:not(.program)::after {
-  content: "↕";
+/* Explicit drag handle for every block in the program */
+#rblock .drag-handle {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -151,7 +150,7 @@ body {
   user-select: none;
 }
 
-#rblock .dblock:not(.program):active::after {
+#rblock .drag-handle:active {
   cursor: grabbing;
 }
 
