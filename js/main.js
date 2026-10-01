@@ -940,6 +940,39 @@ function removeSelectedFromContextMenu() {
   hideContextMenu();
 }
 
+function moveContextMenuBlock(direction) {
+  const block = contextMenuTargetBlock;
+  if (!block || block.id === "rblock" || !isElementInRblock(block)) {
+    hideContextMenu();
+    return;
+  }
+
+  const parent = block.parentElement;
+  if (!parent || !parent.classList.contains("droparea")) {
+    hideContextMenu();
+    return;
+  }
+
+  const neighbor = direction < 0 ? block.previousElementSibling : block.nextElementSibling;
+  if (!neighbor || !neighbor.classList.contains("dblock")) {
+    hideContextMenu();
+    return;
+  }
+
+  redoList = [];
+  pushToUndo();
+
+  if (direction < 0) {
+    parent.insertBefore(block, neighbor);
+  } else {
+    parent.insertBefore(neighbor, block);
+  }
+
+  selectedElement = block;
+  hideContextMenu();
+  setAllTriangles();
+}
+
 function addElementFromContextMenu(type, position) {
   position = position || 'after';
 
@@ -1313,6 +1346,8 @@ const translations = {
     sep_for: "à",
 
     ctx_delete: "Supprimer ce bloc",
+    ctx_move_up: "Déplacer vers le haut",
+    ctx_move_down: "Déplacer vers le bas",
     ctx_add_before: "Ajouter avant...",
     ctx_add_after: "Ajouter après...",
     ctx_instruction: "Instruction",
@@ -1364,6 +1399,8 @@ const translations = {
     sep_for: "to",
 
     ctx_delete: "Delete this block",
+    ctx_move_up: "Move up",
+    ctx_move_down: "Move down",
     ctx_add_before: "Add before...",
     ctx_add_after: "Add after...",
     ctx_instruction: "Instruction",
@@ -1415,6 +1452,8 @@ const translations = {
     sep_for: "bis",
 
     ctx_delete: "Diesen Block löschen",
+    ctx_move_up: "Nach oben verschieben",
+    ctx_move_down: "Nach unten verschieben",
     ctx_add_before: "Davor hinzufügen...",
     ctx_add_after: "Danach hinzufügen...",
     ctx_instruction: "Anweisung",
