@@ -339,8 +339,8 @@ function setDBE(dr) {
     return false;
   }
 
-  dbe.style.backgroundColor = "red";
-  dbe.style.borderColor = "red";
+  dbe.style.backgroundColor = "lightgreen";
+  dbe.style.borderColor = "lightgreen";
   dbe.style.paddingBottom = "2rem";
 
 
