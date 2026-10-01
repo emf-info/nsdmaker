@@ -323,6 +323,11 @@ body {
   text-align: center;
 }
 
+/* Align the caret with Courier New glyphs in the main decision labels. */
+.decision > textarea {
+  line-height: 1.35;
+}
+
 .decision textarea.condition {
   display: block;
   margin: 0 auto;
