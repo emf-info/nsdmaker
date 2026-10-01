@@ -417,6 +417,32 @@ function ensureProgramDragHandles(root = document) {
     handle.title = "Déplacer ce bloc";
     handle.setAttribute("aria-label", "Déplacer ce bloc");
     handle.draggable = true;
+
+    // Anchor the handle to this block. Several existing block styles compute
+    // to position: static, which would otherwise place an absolute handle elsewhere.
+    if (getComputedStyle(block).position === "static") {
+      block.style.position = "relative";
+    }
+    Object.assign(handle.style, {
+      position: "absolute",
+      top: "4px",
+      right: "4px",
+      zIndex: "100",
+      width: "32px",
+      height: "32px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      boxSizing: "border-box",
+      border: "2px solid #ffffff",
+      borderRadius: "6px",
+      background: "#5171A5",
+      color: "#ffffff",
+      font: "bold 24px/1 Arial, sans-serif",
+      boxShadow: "0 1px 4px rgba(0, 0, 0, 0.35)",
+      cursor: "grab",
+      userSelect: "none"
+    });
     block.insertBefore(handle, block.firstChild);
   });
 }
