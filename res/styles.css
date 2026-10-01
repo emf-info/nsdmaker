@@ -523,7 +523,6 @@ svg line {
   /* display: block; */
   width: 100%;
   height: 2rem;
-  margin-top: -1rem;
   overflow: hidden;
   display: flex;
 }
