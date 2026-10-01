@@ -42,6 +42,23 @@ function printHistory() {
   console.log("REDO LIST", redoList);
 }
 
+function cloneWithCurrentTextareaValues(element) {
+  const clone = element.cloneNode(true);
+  const sourceTextareas = element.querySelectorAll("textarea");
+  const clonedTextareas = clone.querySelectorAll("textarea");
+
+  sourceTextareas.forEach((source, index) => {
+    const target = clonedTextareas[index];
+    if (target) {
+      // A textarea's live value is not serialized in outerHTML/cloneNode.
+      target.textContent = source.value;
+      target.value = source.value;
+    }
+  });
+
+  return clone;
+}
+
 function redo() {
   resetSelectedElement();
   if (redoList.length == 0) {
@@ -54,12 +71,12 @@ function redo() {
 
 function pushToUndo() {
   let r = document.getElementById("rblock");
-  undoList.push(r.cloneNode(true));
+  undoList.push(cloneWithCurrentTextareaValues(r));
 }
 
 function pushToRedo() {
   let r = document.getElementById("rblock");
-  redoList.push(r.cloneNode(true));
+  redoList.push(cloneWithCurrentTextareaValues(r));
 }
 
 function setFromUndo() {
@@ -482,7 +499,7 @@ function drag(ev) {
   }
   draggedBlock = draggedFromProgram ? block : null;
   ev.dataTransfer.effectAllowed = draggedFromProgram ? "move" : "copy";
-  const serializedBlock = block.cloneNode(true);
+  const serializedBlock = cloneWithCurrentTextareaValues(block);
   serializedBlock.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
   ev.dataTransfer.setData("text/plain", serializedBlock.outerHTML);
 }
@@ -1242,7 +1259,7 @@ function save() {
   let rootElement = document.getElementById("rblock");
 
   var element = document.createElement('a');
-  const savedRoot = rootElement.cloneNode(true);
+  const savedRoot = cloneWithCurrentTextareaValues(rootElement);
   savedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(savedRoot.outerHTML));
 
