@@ -50,6 +50,8 @@ Le programme commence par un bloc racine. Sa largeur est conçue pour laisser de
 - **Enregistrer** : télécharge le schéma au format `.nsd`.
 - **Exporter l’image** : crée une image PNG du schéma.
 
+Le nom du fichier enregistré et de l’image PNG reprend le titre saisi dans le champ du bloc **Programme**. Les espaces deviennent des tirets bas, les caractères interdits sont retirés et un nom par défaut est utilisé si le titre est vide.
+
 Les raccourcis clavier disponibles sont :
 
 | Raccourci | Action |
