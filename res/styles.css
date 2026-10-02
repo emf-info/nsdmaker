@@ -173,25 +173,25 @@ body {
 #rblock .dblock.process,
 #rblock .dblock.decision-item,
 #rblock .dblock.parallel-item {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
 }
 
 #rblock .dblock.output-instruction {
-  background-color: #ffff80;
+  background-color: #ffff80 !important;
 }
 
 #rblock .dblock.iteration,
 #rblock .dblock.repeatwhile,
 #rblock .dblock.begin-end {
-  background-color: #80ffff;
+  background-color: #80ffff !important;
 }
 
 #rblock .dblock.decision:not(.parallel) {
-  background-color: #80ff80;
+  background-color: #80ff80 !important;
 }
 
 #rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
 }
 
 .droparea {
