@@ -426,12 +426,20 @@ let draggedFromProgram = false;
 let armedDragBlock = null;
 
 function refreshProgramBlockColors(root = document) {
+  const blocks = [];
+  if (root.matches && root.matches("#rblock .dblock:not(#rblock)")) {
+    blocks.push(root);
+  }
   root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
+    if (block !== root) blocks.push(block);
+  });
+
+  blocks.forEach(block => {
     const isInstruction = block.classList.contains("process") ||
       block.classList.contains("decision-item") ||
       block.classList.contains("parallel-item");
     const textArea = block.querySelector(":scope > textarea");
-    const startsWithAffiche = isInstruction && textArea && /^\\s*affiche\\b/i.test(textArea.value);
+    const startsWithAffiche = isInstruction && textArea && /^\s*affiche\b/i.test(textArea.value);
     block.classList.toggle("output-instruction", Boolean(startsWithAffiche));
   });
 }
@@ -1362,7 +1370,7 @@ function textareaResize(ev) {
   ev.target.setAttribute("value", ev.target.value);
   const parentBlock = getParentDBlock(ev.target);
   if (parentBlock && isElementInRblock(parentBlock)) {
-    refreshProgramBlockColors(parentBlock.parentElement || document);
+    refreshProgramBlockColors(parentBlock);
   }
 }
 
