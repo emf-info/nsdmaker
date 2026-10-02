@@ -441,6 +441,22 @@ function refreshProgramBlockColors(root = document) {
     const textArea = block.querySelector(":scope > textarea");
     const startsWithAffiche = isInstruction && textArea && /^\s*affiche\b/i.test(textArea.value);
     block.classList.toggle("output-instruction", Boolean(startsWithAffiche));
+
+    // Set the background directly as well as through CSS so every insertion,
+    // restoration and text edit gets the right color immediately.
+    let backgroundColor = "";
+    if (startsWithAffiche) {
+      backgroundColor = "#ffff80";
+    } else if (block.classList.contains("iteration") ||
+      block.classList.contains("repeatwhile") ||
+      block.classList.contains("begin-end")) {
+      backgroundColor = "#80ffff";
+    } else if (block.classList.contains("decision") && !block.classList.contains("parallel")) {
+      backgroundColor = "#80ff80";
+    } else if (isInstruction) {
+      backgroundColor = "#ffffff";
+    }
+    block.style.backgroundColor = backgroundColor;
   });
 }
 
