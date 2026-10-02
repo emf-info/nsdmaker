@@ -169,6 +169,31 @@ body {
   min-width: 0;
 }
 
+/* Background colors for structured program blocks */
+#rblock .dblock.process,
+#rblock .dblock.decision-item,
+#rblock .dblock.parallel-item {
+  background-color: #ffffff;
+}
+
+#rblock .dblock.output-instruction {
+  background-color: #ffff80;
+}
+
+#rblock .dblock.iteration,
+#rblock .dblock.repeatwhile,
+#rblock .dblock.begin-end {
+  background-color: #80ffff;
+}
+
+#rblock .dblock.decision:not(.parallel) {
+  background-color: #80ff80;
+}
+
+#rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
+  background-color: #ffffff;
+}
+
 .droparea {
   min-width: 5vw;
 }
