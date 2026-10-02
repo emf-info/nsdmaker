@@ -425,6 +425,17 @@ let draggedBlock = null;
 let draggedFromProgram = false;
 let armedDragBlock = null;
 
+function refreshProgramBlockColors(root = document) {
+  root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
+    const isInstruction = block.classList.contains("process") ||
+      block.classList.contains("decision-item") ||
+      block.classList.contains("parallel-item");
+    const textArea = block.querySelector(":scope > textarea");
+    const startsWithAffiche = isInstruction && textArea && /^\\s*affiche\\b/i.test(textArea.value);
+    block.classList.toggle("output-instruction", Boolean(startsWithAffiche));
+  });
+}
+
 function ensureProgramDragHandles(root = document) {
   root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
     if (block.querySelector(":scope > .drag-handle")) return;
@@ -465,7 +476,11 @@ function ensureProgramDragHandles(root = document) {
 }
 
 ensureProgramDragHandles();
-new MutationObserver(() => ensureProgramDragHandles()).observe(
+refreshProgramBlockColors();
+new MutationObserver(() => {
+  ensureProgramDragHandles();
+  refreshProgramBlockColors();
+}).observe(
   document.getElementById("canvas"),
   { childList: true, subtree: true }
 );
@@ -1309,6 +1324,8 @@ function upload() {
     reader.onload = readerEvent => {
       applyRootElement(readerEvent.target.result);
       applyTextareas();
+      refreshProgramBlockColors();
+      ensureProgramDragHandles();
       setAllTriangles();
     }
 
@@ -1343,6 +1360,10 @@ function textareaResize(ev) {
   ev.target.style.height = ev.target.scrollHeight + offset + 'px';
 
   ev.target.setAttribute("value", ev.target.value);
+  const parentBlock = getParentDBlock(ev.target);
+  if (parentBlock && isElementInRblock(parentBlock)) {
+    refreshProgramBlockColors(parentBlock.parentElement || document);
+  }
 }
 
 function resetSidebar() {
