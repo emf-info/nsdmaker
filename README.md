@@ -27,6 +27,13 @@ Les blocs disponibles sont :
 - **Bloc « Sans fin »** : une structure répétée sans condition d’arrêt.
 - **Traitement parallèle** : plusieurs branches exécutées en parallèle.
 
+Les couleurs facilitent la lecture du schéma :
+
+- **Blanc** : instruction ordinaire.
+- **Jaune** : instruction dont le texte commence par `affiche` (sans distinction entre majuscules et minuscules).
+- **Cyan** : boucles.
+- **Vert** : alternatives et sélections. Les branches d’une sélection restent blanches.
+
 Le programme commence par un bloc racine. Sa largeur est conçue pour laisser de la place aux instructions et aux structures imbriquées.
 
 ### Modifier et organiser les blocs
