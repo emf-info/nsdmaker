@@ -323,8 +323,8 @@ function setDropareaSelectedColor(dr) {
   }
 
   if (dr.classList.contains("droparea")) {
-    dr.style.backgroundColor = "lightgreen";
-    dr.style.borderColor = "lightgreen";
+    dr.style.setProperty("background-color", "lightgreen", "important");
+    dr.style.setProperty("border-color", "lightgreen", "important");
   }
 }
 
