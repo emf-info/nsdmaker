@@ -351,6 +351,12 @@ body {
   flex-direction: column;
 }
 
+/* Prevent nested instructions from overlapping the branch divider. */
+#rblock .decision:not(.parallel) .decision-branch > .droparea > .dblock {
+  margin: 0;
+  height: auto;
+}
+
 
 
 .decision textarea {
