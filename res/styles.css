@@ -182,11 +182,15 @@ body {
 
 #rblock .dblock.iteration,
 #rblock .dblock.repeatwhile,
-#rblock .dblock.begin-end {
+#rblock .dblock.begin-end,
+#sidebar .dblock.iteration,
+#sidebar .dblock.repeatwhile,
+#sidebar .dblock.begin-end {
   background-color: #80ffff !important;
 }
 
-#rblock .dblock.decision:not(.parallel) {
+#rblock .dblock.decision:not(.parallel),
+#sidebar .dblock.decision:not(.parallel) {
   background-color: #80ff80 !important;
 }
 
