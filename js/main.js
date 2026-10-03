@@ -460,6 +460,28 @@ function refreshProgramBlockColors(root = document) {
   });
 }
 
+function refreshUsedDropAreas(root = document) {
+  const dropAreas = [];
+  if (root.matches && root.matches("#rblock .droparea")) {
+    dropAreas.push(root);
+  }
+  root.querySelectorAll("#rblock .droparea").forEach(area => {
+    if (area !== root) dropAreas.push(area);
+  });
+
+  dropAreas.forEach(area => {
+    const containsBlock = Array.from(area.children).some(child =>
+      child.classList && child.classList.contains("dblock")
+    );
+    if (containsBlock) {
+      // A used drop area is only a container. Keep it transparent so it
+      // cannot cover the color of the block placed inside it.
+      area.style.backgroundColor = "transparent";
+      area.style.borderColor = "transparent";
+    }
+  });
+}
+
 function ensureProgramDragHandles(root = document) {
   root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
     if (block.querySelector(":scope > .drag-handle")) return;
@@ -501,9 +523,11 @@ function ensureProgramDragHandles(root = document) {
 
 ensureProgramDragHandles();
 refreshProgramBlockColors();
+refreshUsedDropAreas();
 new MutationObserver(() => {
   ensureProgramDragHandles();
   refreshProgramBlockColors();
+  refreshUsedDropAreas();
 }).observe(
   document.getElementById("canvas"),
   { childList: true, subtree: true }
@@ -618,6 +642,7 @@ function drop(ev) {
 
 
     unselectAllElementsFromDroparea(target);
+    refreshUsedDropAreas(target);
 
 
 
