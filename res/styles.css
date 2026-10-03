@@ -194,6 +194,11 @@ body {
   background-color: transparent !important;
 }
 
+/* Keep insertion areas white inside green decision branches. */
+#rblock .decision:not(.parallel) > .decision-branches > .decision-branch > .droparea {
+  background-color: #ffffff !important;
+}
+
 .droparea {
   min-width: 5vw;
 }
