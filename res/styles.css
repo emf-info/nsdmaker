@@ -190,11 +190,7 @@ body {
   background-color: #80ff80 !important;
 }
 
-#rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
-  background-color: transparent !important;
-}
-
-/* Keep the decision condition green while branch contents stay white. */
+/* Branch labels form the green upper strip; branch content remains white. */
 #rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
   background-color: #ffffff !important;
 }
@@ -202,9 +198,9 @@ body {
   background-color: #80ff80 !important;
 }
 
-/* All insertion targets stay white, including when an instruction is nested. */
+/* Leave insertion areas white at rest; drag handlers can highlight them green. */
 #rblock .decision:not(.parallel) .decision-branches .decision-branch .droparea {
-  background-color: #ffffff !important;
+  background-color: #ffffff;
 }
 
 .droparea {
@@ -378,6 +374,9 @@ body {
 .decision .decision-branch textarea:first-child {
   /* max-width: 10vw; */
   border-bottom: 5px solid #7f7f7f;
+  padding-top: 0.35rem;
+  padding-bottom: 0.1rem;
+  line-height: 1.2;
 }
 
 .decision .droparea.drop-before-begin {
