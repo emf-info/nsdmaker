@@ -359,6 +359,13 @@ body {
 /* INSTRUCTION */
 .dblock.process {}
 
+/* Align instruction text in the program only; keep sidebar templates centered. */
+#rblock .dblock.process > textarea,
+#rblock .dblock.decision-item > textarea,
+#rblock .dblock.parallel-item > textarea {
+  text-align: left;
+}
+
 /* DECISION */
 .decision {
   padding: 0;
