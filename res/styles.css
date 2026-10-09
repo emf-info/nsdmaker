@@ -120,6 +120,12 @@ body {
 #sidebar .dblock textarea {
   user-select: none;
   point-events: none;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+#sidebar .dblock textarea::-webkit-scrollbar {
+  display: none;
 }
 
 
