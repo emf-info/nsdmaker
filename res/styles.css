@@ -499,6 +499,11 @@ body {
   flex-basis: 3.5rem;
 }
 
+/* Align for-loop fields left in the program only. */
+#rblock .iteration.for-loop .for-header textarea {
+  text-align: left;
+}
+
 #sidebar .iteration.for-loop {
   width: calc(100% - 1.5rem);
   min-width: 0;
