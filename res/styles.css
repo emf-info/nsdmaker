@@ -200,6 +200,44 @@ body {
   background-color: #80ff80 !important;
 }
 
+#rblock .dblock.input-block,
+#sidebar .dblock.input-block {
+  background-color: #ff00ff !important;
+}
+
+.dblock.input-block {
+  min-width: 30vw;
+}
+
+#sidebar .dblock.input-block {
+  width: calc(100% - 1.5rem);
+  min-width: 0;
+}
+
+.input-block-fields {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.input-block-fields > textarea.input-name {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+}
+
+.input-block-fields > textarea.input-command {
+  flex: 2 1 0;
+  width: 0;
+  min-width: 0;
+}
+
+.input-block-fields > .input-equals {
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
 /* Branch labels form the green upper strip; branch content remains white. */
 #rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
   background-color: #ffffff !important;
