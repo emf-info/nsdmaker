@@ -440,7 +440,7 @@ function refreshProgramBlockColors(root = document) {
       block.classList.contains("decision-item") ||
       block.classList.contains("parallel-item");
     const textArea = block.querySelector(":scope > textarea");
-    const startsWithAffiche = isInstruction && textArea && /^\s*(?:affiche|display|anzeigen)\b/i.test(textArea.value);
+    const startsWithAffiche = isInstruction && textArea && /^\s*(?:affiche|print|anzeigen)\b/i.test(textArea.value);
     block.classList.toggle("output-instruction", Boolean(startsWithAffiche));
 
     // Set the background directly as well as through CSS so every insertion,
