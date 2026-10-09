@@ -105,7 +105,8 @@ function setFromRedo() {
 function clrCanvas() {
   // document.getElementById("rblock").getElementsByClassName("drop-before-end")[0].innerHTML = '';
   let canvas = document.getElementById("canvas");
-  canvas.innerHTML = '<div id="rblock" class="dblock program"><textarea rows="1" placeholder="Program" ondrop="return false;" oninput="textareaResize(event);"></textarea><div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div></div>';
+  canvas.innerHTML = '<div id="rblock" class="dblock program"><textarea rows="1" placeholder="program" data-i18n-ph="ph_program" ondrop="return false;" oninput="textareaResize(event);"></textarea><div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div></div>';
+  setLanguage(currentLang);
 }
 
 function clearCanvas() {
@@ -113,7 +114,7 @@ function clearCanvas() {
   undoList = [];
   redoList = [];
 
-  let msg = (translations[currentLang] && translations[currentLang].confirm_clear) || "Unsaved changes will be lost.";
+  let msg = lowercaseFirstCharacter((translations[currentLang] && translations[currentLang].confirm_clear) || "Unsaved changes will be lost.");
   if (confirm(msg)) {
     clrCanvas();
   }
@@ -488,7 +489,7 @@ function ensureProgramDragHandles(root = document) {
     const handle = document.createElement("span");
     handle.className = "drag-handle";
     handle.textContent = "↕";
-    handle.title = "Déplacer ce bloc";
+    handle.title = "déplacer ce bloc";
     handle.setAttribute("aria-label", "Déplacer ce bloc");
     handle.draggable = true;
 
@@ -694,7 +695,7 @@ function decisionDrop(ev) {
       let copy = lastBranch.cloneNode(true);
       copy.lastElementChild.innerHTML = '';
       copy.firstElementChild.value = '';
-      copy.firstElementChild.placeholder = "Default";
+      copy.firstElementChild.placeholder = lowercaseFirstCharacter((translations[currentLang] && translations[currentLang].ph_default) || "défaut");
       console.log(copy);
       lastBranch.after(copy);
 
@@ -1227,7 +1228,7 @@ function addElementFromContextMenu(type, position) {
         let ta = copy.querySelector("textarea");
         if (ta) {
           ta.value = '';
-          ta.placeholder = "Défaut";
+          ta.placeholder = lowercaseFirstCharacter((translations[currentLang] && translations[currentLang].ph_default) || "défaut");
         }
         lastBranch.after(copy);
       }
@@ -1502,6 +1503,12 @@ function dragElement(elmnt) {
 */
 
 /* INTERNATIONALIZATION (i18n) */
+function lowercaseFirstCharacter(text) {
+  return String(text).replace(/^(\s*)(\S)/u, (_, whitespace, firstCharacter) =>
+    whitespace + firstCharacter.toLowerCase()
+  );
+}
+
 const translations = {
   fr: {
     btn_open: "Ouvrir <b>[^O]</b>",
@@ -1708,14 +1715,14 @@ function setLanguage(lang) {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     let key = el.getAttribute("data-i18n");
     if (dict[key]) {
-      el.innerHTML = dict[key];
+      el.innerHTML = lowercaseFirstCharacter(dict[key]);
     }
   });
 
   document.querySelectorAll("[data-i18n-ph]").forEach(el => {
     let key = el.getAttribute("data-i18n-ph");
     if (dict[key]) {
-      el.placeholder = dict[key];
+      el.placeholder = lowercaseFirstCharacter(dict[key]);
     }
   });
 
@@ -1723,15 +1730,15 @@ function setLanguage(lang) {
   document.querySelectorAll("#sidebar [data-i18n-value]").forEach(el => {
     let key = el.getAttribute("data-i18n-value");
     if (dict[key]) {
-      el.value = dict[key];
-      el.textContent = dict[key];
+      el.value = lowercaseFirstCharacter(dict[key]);
+      el.textContent = lowercaseFirstCharacter(dict[key]);
     }
   });
 
   document.querySelectorAll("[data-i18n-title]").forEach(el => {
     let key = el.getAttribute("data-i18n-title");
     if (dict[key]) {
-      el.title = dict[key];
+      el.title = lowercaseFirstCharacter(dict[key]);
     }
   });
 }
