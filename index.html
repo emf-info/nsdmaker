@@ -53,6 +53,15 @@
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
+    <div class="dblock process output-instruction" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+        onfocusout="enableDraggableParent(event);">affiche</textarea>
+    </div>
+
     <div class="dblock input-block" draggable="true" ondragstart="drag(event)">
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
