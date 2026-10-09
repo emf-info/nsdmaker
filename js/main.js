@@ -799,16 +799,21 @@ function showParallelLines() {
 
 function getProgramFileName() {
   const programTitle = document.querySelector("#rblock > textarea");
-  let name = programTitle ? programTitle.value.trim() : "";
+  const title = programTitle
+    ? (programTitle.value.trim() ||
+      (programTitle.getAttribute("value") || "").trim() ||
+      (programTitle.placeholder || "").trim())
+    : "";
 
-  name = name
+  // Use the visible program title as the filename, removing only characters
+  // that are not allowed in common filesystems.
+  const name = title
     .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
-    .replace(/\s+/g, "_")
     .replace(/[. ]+$/g, "")
     .slice(0, 80)
-    .replace(/^_+|_+$/g, "");
+    .trim();
 
-  return name || "programme";
+  return name || "Programme";
 }
 function getImage() {
   const filename = getProgramFileName();
