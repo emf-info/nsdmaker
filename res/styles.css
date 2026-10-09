@@ -182,7 +182,8 @@ body {
   background-color: #ffffff !important;
 }
 
-#rblock .dblock.output-instruction {
+#rblock .dblock.output-instruction,
+#sidebar .dblock.output-instruction {
   background-color: #ffff80 !important;
 }
 
