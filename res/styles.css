@@ -203,7 +203,7 @@ body {
 
 #rblock .dblock.input-block,
 #sidebar .dblock.input-block {
-  background-color: #ff00ff !important;
+  background-color: #ff00ff70 !important;
 }
 
 .dblock.input-block {
