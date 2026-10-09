@@ -439,7 +439,7 @@ function refreshProgramBlockColors(root = document) {
       block.classList.contains("decision-item") ||
       block.classList.contains("parallel-item");
     const textArea = block.querySelector(":scope > textarea");
-    const startsWithAffiche = isInstruction && textArea && /^\s*affiche\b/i.test(textArea.value);
+    const startsWithAffiche = isInstruction && textArea && /^\s*(?:affiche|display|anzeigen)\b/i.test(textArea.value);
     block.classList.toggle("output-instruction", Boolean(startsWithAffiche));
 
     // Set the background directly as well as through CSS so every insertion,
@@ -1486,6 +1486,8 @@ const translations = {
 
     heading_instruction: "Instruction",
     heading_invite: "Invite",
+    keyword_display: "affiche",
+    call_prompt: 'demande("")',
     heading_alternative: "Alternative",
     heading_selection: "Sélection",
     heading_for_loop: "Boucle",
@@ -1542,6 +1544,8 @@ const translations = {
 
     heading_instruction: "Instruction",
     heading_invite: "Prompt",
+    keyword_display: "display",
+    call_prompt: 'prompt("")',
     heading_alternative: "Alternative",
     heading_selection: "Selection",
     heading_for_loop: "Loop (For)",
@@ -1598,6 +1602,8 @@ const translations = {
 
     heading_instruction: "Anweisung",
     heading_invite: "Eingabe",
+    keyword_display: "Anzeigen",
+    call_prompt: 'frage("")',
     heading_alternative: "Alternativ",
     heading_selection: "Auswahl",
     heading_for_loop: "Schleife (Für)",
@@ -1669,6 +1675,15 @@ function setLanguage(lang) {
     let key = el.getAttribute("data-i18n-ph");
     if (dict[key]) {
       el.placeholder = dict[key];
+    }
+  });
+
+  // Translate only the sidebar templates; existing program text stays as entered.
+  document.querySelectorAll("#sidebar [data-i18n-value]").forEach(el => {
+    let key = el.getAttribute("data-i18n-value");
+    if (dict[key]) {
+      el.value = dict[key];
+      el.textContent = dict[key];
     }
   });
 
