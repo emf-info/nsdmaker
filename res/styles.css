@@ -482,6 +482,37 @@ body {
   flex-basis: 3.5rem;
 }
 
+#sidebar .iteration.for-loop {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+#sidebar .iteration.for-loop .for-header {
+  gap: 0.1rem;
+  padding: 0.1rem 0.15rem;
+}
+
+#sidebar .iteration.for-loop .for-header textarea {
+  flex: 0 1 2rem;
+  width: 2rem;
+  min-width: 1.5rem;
+  max-width: 2.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 16px;
+}
+
+#sidebar .iteration.for-loop .for-header textarea.for-variable {
+  flex-basis: 2.5rem;
+  width: 2.5rem;
+  min-width: 2rem;
+  max-width: 3rem;
+}
+
+#sidebar .iteration.for-loop .for-header .for-sep {
+  font-size: 16px;
+}
+
 .iteration.for-loop .for-header .for-sep {
   user-select: none;
   font-weight: bold;
