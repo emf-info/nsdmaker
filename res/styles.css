@@ -210,7 +210,7 @@ body {
 
 /* Leave insertion areas white at rest; drag handlers can highlight them green. */
 #rblock .decision:not(.parallel) .decision-branches .decision-branch .droparea {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .droparea {
