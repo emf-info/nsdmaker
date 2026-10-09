@@ -239,6 +239,13 @@ body {
   line-height: 1;
 }
 
+.input-block-fields > .input-command-prefix,
+.input-block-fields > .input-command-suffix {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.75em;
+}
+
 /* Branch labels form the green upper strip; branch content remains white. */
 #rblock .decision:not(.parallel) > .decision-branches > .decision-branch {
   background-color: #ffffff !important;
