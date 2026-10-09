@@ -57,7 +57,7 @@
       <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
         ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
       </div>
-      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" ondrop="return false;"
+      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" data-i18n-value="keyword_display" ondrop="return false;"
         oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
         onfocusout="enableDraggableParent(event);">affiche</textarea>
     </div>
@@ -73,7 +73,8 @@
         <span class="input-equals">=</span>
         <textarea class="input-command" rows="1" placeholder="Invite de commande" data-i18n-ph="ph_input_command"
           ondrop="return false;" oninput="textareaResize(event);" ondragstart="return false;"
-          onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);">demande("")</textarea>
+          onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);"
+          data-i18n-value="call_prompt">demande("")</textarea>
       </div>
     </div>
 
