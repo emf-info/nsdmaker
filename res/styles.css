@@ -202,12 +202,7 @@ body {
 }
 
 #rblock .dblock.input-block,
-#sidebar /* Keep the input block text left-aligned in the program, not the sidebar. */
-#rblock .dblock.input-block textarea {
-  text-align: left;
-}
-
-.dblock.input-block {
+#sidebar .dblock.input-block {
   background-color: #ff00ff70 !important;
 }
 
@@ -218,6 +213,11 @@ body {
 #sidebar .dblock.input-block {
   width: calc(100% - 1.5rem);
   min-width: 0;
+}
+
+/* Align the request fields in the program without changing the sidebar. */
+#rblock .dblock.input-block textarea {
+  text-align: left;
 }
 
 .input-block-fields {
