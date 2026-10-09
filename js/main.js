@@ -1485,6 +1485,7 @@ const translations = {
     btn_clear: "Tout effacer <b>[^DEL]</b>",
 
     heading_instruction: "Instruction",
+    heading_invite: "Invite",
     heading_alternative: "Alternative",
     heading_selection: "Sélection",
     heading_for_loop: "Boucle",
@@ -1495,6 +1496,8 @@ const translations = {
 
     ph_program: "Programme",
     ph_instruction: "Instruction",
+    ph_input_name: "nom",
+    ph_input_command: "Invite de commande",
     ph_alternative: "Alternative",
     ph_true: "Vrai",
     ph_false: "Faux",
@@ -1538,6 +1541,7 @@ const translations = {
     btn_clear: "Clear all <b>[^DEL]</b>",
 
     heading_instruction: "Instruction",
+    heading_invite: "Prompt",
     heading_alternative: "Alternative",
     heading_selection: "Selection",
     heading_for_loop: "Loop (For)",
@@ -1548,6 +1552,8 @@ const translations = {
 
     ph_program: "Program",
     ph_instruction: "Instruction",
+    ph_input_name: "name",
+    ph_input_command: "Command prompt",
     ph_alternative: "Alternative",
     ph_true: "True",
     ph_false: "False",
@@ -1591,6 +1597,7 @@ const translations = {
     btn_clear: "Alles löschen <b>[^DEL]</b>",
 
     heading_instruction: "Anweisung",
+    heading_invite: "Eingabe",
     heading_alternative: "Alternativ",
     heading_selection: "Auswahl",
     heading_for_loop: "Schleife (Für)",
@@ -1601,6 +1608,8 @@ const translations = {
 
     ph_program: "Programm",
     ph_instruction: "Anweisung",
+    ph_input_name: "Name",
+    ph_input_command: "Eingabeaufforderung",
     ph_alternative: "Alternativ",
     ph_true: "Wahr",
     ph_false: "Falsch",
