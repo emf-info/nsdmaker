@@ -816,7 +816,31 @@ function getImage() {
   document.getElementById("png").disabled = true;
   instance.on('zoomend', function(e) {
     setAllTextareaValuesToPlaceholder();
-    html2canvas(document.querySelector("#rblock")).then(canvas => {
+    html2canvas(document.querySelector("#rblock"), {
+      onclone: clonedDocument => {
+        const clonedRoot = clonedDocument.querySelector("#rblock");
+        if (!clonedRoot) return;
+
+        // Drag controls belong to the editor UI, not to the exported diagram.
+        clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+
+        // Match the larger text shown in the editor while keeping the live
+        // program untouched. Recalculate textarea height so wrapped text stays visible.
+        clonedRoot.querySelectorAll("textarea").forEach(textarea => {
+          const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(textarea).fontSize) || 24;
+          const exportSize = Math.round(originalSize * 1.5);
+          textarea.style.fontSize = exportSize + "px";
+          textarea.style.lineHeight = Math.round(exportSize * 1.2) + "px";
+          textarea.style.height = "auto";
+          textarea.style.height = Math.max(textarea.scrollHeight, exportSize * 1.4) + "px";
+        });
+
+        clonedRoot.querySelectorAll(".input-equals").forEach(separator => {
+          const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(separator).fontSize) || 24;
+          separator.style.fontSize = Math.round(originalSize * 1.5) + "px";
+        });
+      }
+    }).then(canvas => {
       let rootElement = document.getElementById("rblock");
 
       var img = canvas.toDataURL("image/png");
