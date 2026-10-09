@@ -463,11 +463,20 @@ body {
 }
 
 .iteration.for-loop .for-header textarea {
-  flex: 0 1 auto;
-  width: auto;
-  min-width: 3.5rem;
-  max-width: 3rem;
+  flex: 0 1 3.5rem;
+  width: 3.5rem;
+  min-width: 2.5rem;
+  max-width: 4.5rem;
   text-align: center;
+}
+
+.iteration.for-loop .for-header textarea.for-variable {
+  flex-basis: 3rem;
+}
+
+.iteration.for-loop .for-header textarea.for-start,
+.iteration.for-loop .for-header textarea.for-end {
+  flex-basis: 3.5rem;
 }
 
 .iteration.for-loop .for-header .for-sep {
