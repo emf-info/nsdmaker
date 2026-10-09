@@ -1544,7 +1544,7 @@ const translations = {
 
     heading_instruction: "Instruction",
     heading_invite: "Prompt",
-    keyword_display: "display",
+    keyword_display: "print",
     call_prompt: 'prompt("")',
     heading_alternative: "Alternative",
     heading_selection: "Selection",
