@@ -1511,6 +1511,7 @@ const translations = {
     ph_branch: "Branche",
     ph_condition: "Condition",
     ph_parallel_block: "Bloc parallèle",
+    sep_for_assign: "pour",
     sep_for: "à",
 
     ctx_delete: "Supprimer ce bloc",
@@ -1572,6 +1573,7 @@ const translations = {
     ph_branch: "Branch",
     ph_condition: "Condition",
     ph_parallel_block: "Parallel Block",
+    sep_for_assign: "for",
     sep_for: "to",
 
     ctx_delete: "Delete this block",
@@ -1633,6 +1635,7 @@ const translations = {
     ph_branch: "Zweig",
     ph_condition: "Bedingung",
     ph_parallel_block: "Paralleler Block",
+    sep_for_assign: "für",
     sep_for: "bis",
 
     ctx_delete: "Diesen Block löschen",
