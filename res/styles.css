@@ -500,6 +500,10 @@ body {
 }
 
 #sidebar .iteration.for-loop {
+  width: calc(100% - 1.5rem);
+  min-width: 0;
+  max-width: calc(100% - 1.5rem);
+  box-sizing: border-box;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
 }
@@ -510,24 +514,21 @@ body {
 }
 
 #sidebar .iteration.for-loop .for-header textarea {
-  flex: 0 1 2rem;
-  width: 2rem;
-  min-width: 1.5rem;
-  max-width: 2.5rem;
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  max-width: none;
   padding-left: 0;
   padding-right: 0;
-  font-size: 16px;
+  font-size: inherit;
 }
 
 #sidebar .iteration.for-loop .for-header textarea.for-variable {
-  flex-basis: 2.5rem;
-  width: 2.5rem;
-  min-width: 2rem;
-  max-width: 3rem;
+  flex: 2 1 0;
 }
 
 #sidebar .iteration.for-loop .for-header .for-sep {
-  font-size: 16px;
+  font-size: inherit;
 }
 
 .iteration.for-loop .for-header .for-sep {
