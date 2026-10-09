@@ -471,7 +471,10 @@ body {
 }
 
 .iteration.for-loop .for-header textarea.for-variable {
-  flex-basis: 3rem;
+  flex-basis: 5rem;
+  width: 5rem;
+  min-width: 5rem;
+  max-width: 6rem;
 }
 
 .iteration.for-loop .for-header textarea.for-start,
