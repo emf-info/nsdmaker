@@ -53,6 +53,21 @@
         onfocusout="enableDraggableParent(event);"></textarea>
     </div>
 
+    <div class="dblock input-block" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <div class="input-block-fields">
+        <textarea class="input-name" rows="1" placeholder="nom" data-i18n-ph="ph_input_name" ondrop="return false;"
+          oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+        <span class="input-equals">=</span>
+        <textarea class="input-command" rows="1" placeholder="Invite de commande" data-i18n-ph="ph_input_command"
+          ondrop="return false;" oninput="textareaResize(event);" ondragstart="return false;"
+          onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);"></textarea>
+      </div>
+    </div>
+
     <h2 data-i18n="heading_alternative">Alternative</h2>
 
     <div class="dblock decision decision-two" draggable="true" ondragstart="drag(event)">
