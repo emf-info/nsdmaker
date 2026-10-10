@@ -488,6 +488,14 @@ body {
   box-sizing: border-box;
 }
 
+/* Keep the header row height consistent across for, while and until loops. */
+.iteration.for-loop .for-header,
+.iteration:not(.for-loop) > textarea,
+.repeatwhile > textarea {
+  min-height: 2.5rem;
+  box-sizing: border-box;
+}
+
 .iteration.for-loop .for-header textarea {
   flex: 0 1 3.5rem;
   width: 3.5rem;
