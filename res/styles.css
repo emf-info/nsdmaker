@@ -334,6 +334,15 @@ body {
   text-align: left;
 }
 
+/* Make all diagram text bold without changing the sidebar templates. */
+#rblock textarea,
+#rblock .for-sep,
+#rblock .input-equals,
+#rblock .input-command-prefix,
+#rblock .input-command-suffix {
+  font-weight: bold;
+}
+
 .dblock.program {
   margin-right: auto;
   position: static;
