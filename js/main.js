@@ -436,6 +436,9 @@ function refreshProgramBlockColors(root = document) {
   });
 
   blocks.forEach(block => {
+    const requestNameField = block.querySelector(":scope > .input-block-fields > textarea.input-name");
+    if (requestNameField) resizeInputNameField(requestNameField);
+
     const isInstruction = block.classList.contains("process") ||
       block.classList.contains("decision-item") ||
       block.classList.contains("parallel-item");
@@ -1428,6 +1431,23 @@ function printContent() {
 }
 
 
+function resizeInputNameField(textarea) {
+  if (!textarea || !isElementInRblock(textarea)) return;
+
+  const computed = window.getComputedStyle(textarea);
+  const canvas = resizeInputNameField.measureCanvas || (resizeInputNameField.measureCanvas = document.createElement("canvas"));
+  const context = canvas.getContext("2d");
+  context.font = [computed.fontStyle, computed.fontVariant, computed.fontWeight, computed.fontSize, computed.fontFamily].join(" ");
+
+  const content = textarea.value || textarea.placeholder || "";
+  const textWidth = context.measureText(content).width;
+  const horizontalExtras =
+    parseFloat(computed.paddingLeft) + parseFloat(computed.paddingRight) +
+    parseFloat(computed.borderLeftWidth) + parseFloat(computed.borderRightWidth) + 4;
+
+  textarea.style.width = Math.ceil(textWidth + horizontalExtras) + "px";
+}
+
 function textareaResize(ev) {
   if (!isElementInRblock(ev.target)) {
     ev.target.value = '';
@@ -1438,6 +1458,9 @@ function textareaResize(ev) {
   ev.target.style.height = ev.target.scrollHeight + offset + 'px';
 
   ev.target.setAttribute("value", ev.target.value);
+  if (ev.target.classList.contains("input-name") && isElementInRblock(ev.target)) {
+    resizeInputNameField(ev.target);
+  }
   const parentBlock = getParentDBlock(ev.target);
   if (parentBlock && isElementInRblock(parentBlock)) {
     refreshProgramBlockColors(parentBlock);
