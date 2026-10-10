@@ -239,6 +239,19 @@ body {
   min-width: 0;
 }
 
+/* In the program, size the variable field to its text and let the command use the rest. */
+#rblock .input-block-fields > textarea.input-name {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: none;
+}
+
+#rblock .input-block-fields > textarea.input-command {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+}
+
 .input-block-fields > .input-equals {
   flex: 0 0 auto;
   line-height: 1;
