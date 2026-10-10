@@ -874,6 +874,9 @@ function getImage() {
         const size = parseFloat(view.getComputedStyle(textarea).fontSize) || 36;
         textarea.style.setProperty("height", Math.round(size * 1.4) + "px", "important");
         textarea.style.setProperty("margin", "0", "important");
+        textarea.style.setProperty("padding-top", "0", "important");
+        textarea.style.setProperty("padding-bottom", "0", "important");
+        textarea.style.setProperty("vertical-align", "middle", "important");
       });
 
       // Rebuild the branch divider geometry for the exported dimensions.
