@@ -933,6 +933,29 @@ function getImage() {
         separator.style.setProperty("flex", "0 0 auto", "important");
         separator.style.setProperty("align-self", "center", "important");
       });
+
+      // Keep the true/false branches equal and centered below a continuous V divider.
+      clonedRoot.querySelectorAll(".decision.decision-two > .decision-branches").forEach(branches => {
+        branches.style.setProperty("display", "flex", "important");
+        branches.style.setProperty("width", "100%", "important");
+        branches.querySelectorAll(":scope > .decision-branch").forEach((branch, index) => {
+          branch.style.setProperty("display", "block", "important");
+          branch.style.setProperty("flex", "1 1 0", "important");
+          branch.style.setProperty("width", "50%", "important");
+          branch.style.setProperty("min-width", "0", "important");
+          branch.style.setProperty("box-sizing", "border-box", "important");
+          branch.style.setProperty("border-left", index === 0 ? "none" : "2.5px solid #7f7f7f", "important");
+          branch.style.setProperty("border-right", index === 0 ? "2.5px solid #7f7f7f" : "none", "important");
+        });
+      });
+
+      clonedRoot.querySelectorAll(".decision.decision-two > .triangles").forEach(triangles => {
+        triangles.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 60" preserveAspectRatio="none" style="display:block;width:100%;height:48px;overflow:visible"><line x1="0" y1="0" x2="500" y2="60" stroke="#7f7f7f" stroke-width="5" vector-effect="non-scaling-stroke" /><line x1="500" y1="60" x2="1000" y2="0" stroke="#7f7f7f" stroke-width="5" vector-effect="non-scaling-stroke" /></svg>';
+        triangles.style.setProperty("display", "block", "important");
+        triangles.style.setProperty("width", "100%", "important");
+        triangles.style.setProperty("height", "48px", "important");
+        triangles.style.setProperty("overflow", "visible", "important");
+      });
     }
   }).then(canvas => {
     const link = document.createElement("a");
