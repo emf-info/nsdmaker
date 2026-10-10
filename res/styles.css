@@ -572,6 +572,11 @@ body {
   padding-left: 1rem;
 }
 
+/* Add the requested spacing above the until-loop condition in the program. */
+#rblock .repeatwhile > textarea {
+  margin-top: 20px;
+}
+
 
 .repeatwhile .drop-repeatwhile {
   margin: 0 !important;
