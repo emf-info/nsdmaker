@@ -1449,19 +1449,31 @@ function resizeInputNameField(textarea) {
 }
 
 function textareaResize(ev) {
-  if (!isElementInRblock(ev.target)) {
-    ev.target.value = '';
-  }
-  ev.target.style.boxSizing = 'border-box';
-  var offset = ev.target.offsetHeight - ev.target.clientHeight;
-  ev.target.style.height = 'auto';
-  ev.target.style.height = ev.target.scrollHeight + offset + 'px';
+  const textarea = ev.target;
+  const isProgramName = textarea.classList.contains("input-name") && isElementInRblock(textarea);
 
-  ev.target.setAttribute("value", ev.target.value);
-  if (ev.target.classList.contains("input-name") && isElementInRblock(ev.target)) {
-    resizeInputNameField(ev.target);
+  if (!isElementInRblock(textarea)) {
+    textarea.value = '';
   }
-  const parentBlock = getParentDBlock(ev.target);
+  textarea.style.boxSizing = 'border-box';
+
+  if (isProgramName) {
+    // Resize width first, then keep this single-line field at a stable height.
+    resizeInputNameField(textarea);
+    const computed = window.getComputedStyle(textarea);
+    const lineHeight = parseFloat(computed.lineHeight) || parseFloat(computed.fontSize) * 1.2;
+    const verticalExtras =
+      parseFloat(computed.paddingTop) + parseFloat(computed.paddingBottom) +
+      parseFloat(computed.borderTopWidth) + parseFloat(computed.borderBottomWidth);
+    textarea.style.height = Math.ceil(lineHeight + verticalExtras) + "px";
+  } else {
+    var offset = textarea.offsetHeight - textarea.clientHeight;
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + offset + 'px';
+  }
+
+  textarea.setAttribute("value", textarea.value);
+  const parentBlock = getParentDBlock(textarea);
   if (parentBlock && isElementInRblock(parentBlock)) {
     refreshProgramBlockColors(parentBlock);
   }
