@@ -834,6 +834,14 @@ function getImage() {
       // Drag controls belong to the editor UI, not to the exported diagram.
       clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
 
+      // Give the exported program 30% more width without changing the editor.
+      const currentWidth = parseFloat(clonedDocument.defaultView.getComputedStyle(clonedRoot).width) || clonedRoot.offsetWidth;
+      const exportWidth = Math.round(currentWidth * 1.3);
+      clonedRoot.style.setProperty("width", exportWidth + "px", "important");
+      clonedRoot.style.setProperty("min-width", exportWidth + "px", "important");
+      clonedRoot.style.setProperty("max-width", "none", "important");
+      clonedRoot.style.setProperty("box-sizing", "border-box", "important");
+
       // Increase text size in the cloned image while keeping the editor unchanged.
       clonedRoot.querySelectorAll("textarea").forEach(textarea => {
         const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(textarea).fontSize) || 24;
