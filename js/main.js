@@ -834,30 +834,101 @@ function getImage() {
       const clonedRoot = clonedDocument.querySelector("#rblock");
       if (!clonedRoot) return;
 
-      // Drag controls belong to the editor UI, not to the exported diagram.
       clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
 
-      // Give the exported program 30% more width without changing the editor.
-      const currentWidth = parseFloat(clonedDocument.defaultView.getComputedStyle(clonedRoot).width) || clonedRoot.offsetWidth;
+      // Export with additional width while preserving the editor layout.
+      const view = clonedDocument.defaultView;
+      const currentWidth = parseFloat(view.getComputedStyle(clonedRoot).width) || clonedRoot.offsetWidth;
       const exportWidth = Math.round(currentWidth * 1.3);
       clonedRoot.style.setProperty("width", exportWidth + "px", "important");
       clonedRoot.style.setProperty("min-width", exportWidth + "px", "important");
       clonedRoot.style.setProperty("max-width", "none", "important");
       clonedRoot.style.setProperty("box-sizing", "border-box", "important");
 
-      // Increase text size in the cloned image while keeping the editor unchanged.
+      // Size fields after changing the font, then explicitly measure multiline content.
       clonedRoot.querySelectorAll("textarea").forEach(textarea => {
-        const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(textarea).fontSize) || 24;
+        const originalSize = parseFloat(view.getComputedStyle(textarea).fontSize) || 24;
         const exportSize = Math.round(originalSize * 1.5);
-        textarea.style.fontSize = exportSize + "px";
-        textarea.style.lineHeight = Math.round(exportSize * 1.2) + "px";
-        textarea.style.height = "auto";
-        textarea.style.height = Math.max(textarea.scrollHeight, exportSize * 1.4) + "px";
+        textarea.style.setProperty("font-size", exportSize + "px", "important");
+        textarea.style.setProperty("line-height", Math.round(exportSize * 1.2) + "px", "important");
+        textarea.style.setProperty("box-sizing", "border-box", "important");
+        textarea.style.setProperty("white-space", "pre-wrap", "important");
+        textarea.style.setProperty("overflow-wrap", "anywhere", "important");
+      });
+
+      // Let long instruction text wrap inside its block instead of being clipped.
+      clonedRoot.querySelectorAll(".dblock.process > textarea, .dblock.decision-item > textarea, .dblock.parallel-item > textarea").forEach(textarea => {
+        textarea.style.setProperty("width", "100%", "important");
+        textarea.style.setProperty("min-width", "0", "important");
+        textarea.style.setProperty("max-width", "100%", "important");
+        textarea.style.setProperty("text-align", "left", "important");
+        textarea.style.setProperty("overflow", "hidden", "important");
+        textarea.style.setProperty("word-break", "normal", "important");
+      });
+
+      // Keep the variable, equals sign and prompt on one vertically centered line.
+      clonedRoot.querySelectorAll(".input-block-fields").forEach(row => {
+        row.style.setProperty("align-items", "center", "important");
+      });
+      clonedRoot.querySelectorAll(".input-block-fields > textarea").forEach(textarea => {
+        const size = parseFloat(view.getComputedStyle(textarea).fontSize) || 36;
+        textarea.style.setProperty("height", Math.round(size * 1.4) + "px", "important");
+        textarea.style.setProperty("margin", "0", "important");
+      });
+
+      // Rebuild the branch divider geometry for the exported dimensions.
+      clonedRoot.querySelectorAll(".decision.decision-two > .triangles").forEach(triangles => {
+        triangles.style.setProperty("height", "48px", "important");
+        triangles.style.setProperty("overflow", "visible", "important");
+        const svgs = triangles.querySelectorAll("svg");
+        svgs.forEach(svg => {
+          svg.style.setProperty("display", "block", "important");
+          svg.style.setProperty("width", "50%", "important");
+          svg.style.setProperty("height", "48px", "important");
+          svg.style.setProperty("overflow", "visible", "important");
+        });
+        const lines = triangles.querySelectorAll("line");
+        if (lines.length >= 2) {
+          lines[0].setAttribute("x1", "0");
+          lines[0].setAttribute("y1", "0");
+          lines[0].setAttribute("x2", "100%");
+          lines[0].setAttribute("y2", "100%");
+          lines[1].setAttribute("x1", "0");
+          lines[1].setAttribute("y1", "100%");
+          lines[1].setAttribute("x2", "100%");
+          lines[1].setAttribute("y2", "0");
+          lines.forEach(line => {
+            line.setAttribute("stroke", "#7f7f7f");
+            line.setAttribute("stroke-width", "5");
+            line.setAttribute("vector-effect", "non-scaling-stroke");
+          });
+        }
+      });
+
+      // Measure content after widths and line wrapping have settled.
+      clonedRoot.querySelectorAll("textarea").forEach(textarea => {
+        const style = view.getComputedStyle(textarea);
+        const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) * 1.2);
+        if (textarea.classList.contains("input-name") || textarea.classList.contains("input-command")) {
+          return;
+        }
+        textarea.style.setProperty("height", "auto", "important");
+        textarea.style.setProperty("height", Math.max(textarea.scrollHeight, lineHeight * 1.4) + "px", "important");
+      });
+
+      // Set a fixed line height for the input fields after textareas are measured.
+      clonedRoot.querySelectorAll(".input-block-fields > textarea").forEach(textarea => {
+        const style = view.getComputedStyle(textarea);
+        const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) * 1.2);
+        const verticalExtras = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) +
+          parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+        textarea.style.setProperty("height", Math.ceil(lineHeight + verticalExtras) + "px", "important");
       });
 
       clonedRoot.querySelectorAll(".input-equals").forEach(separator => {
-        const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(separator).fontSize) || 24;
-        separator.style.fontSize = Math.round(originalSize * 1.5) + "px";
+        const originalSize = parseFloat(view.getComputedStyle(separator).fontSize) || 24;
+        separator.style.setProperty("font-size", Math.round(originalSize * 1.5) + "px", "important");
+        separator.style.setProperty("line-height", "1", "important");
       });
     }
   }).then(canvas => {
