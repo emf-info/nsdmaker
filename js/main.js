@@ -819,56 +819,47 @@ function getProgramFileName() {
 function getImage() {
   const filename = getProgramFileName();
   resetSelectedElement();
-  document.getElementById("png").disabled = true;
-  instance.on('zoomend', function(e) {
-    setAllTextareaValuesToPlaceholder();
-    html2canvas(document.querySelector("#rblock"), {
-      onclone: clonedDocument => {
-        const clonedRoot = clonedDocument.querySelector("#rblock");
-        if (!clonedRoot) return;
+  const button = document.getElementById("png");
+  button.disabled = true;
 
-        // Drag controls belong to the editor UI, not to the exported diagram.
-        clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+  // Fill empty fields with their placeholders for the capture, without changing the zoom.
+  setAllTextareaValuesToPlaceholder();
 
-        // Match the larger text shown in the editor while keeping the live
-        // program untouched. Recalculate textarea height so wrapped text stays visible.
-        clonedRoot.querySelectorAll("textarea").forEach(textarea => {
-          const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(textarea).fontSize) || 24;
-          const exportSize = Math.round(originalSize * 1.5);
-          textarea.style.fontSize = exportSize + "px";
-          textarea.style.lineHeight = Math.round(exportSize * 1.2) + "px";
-          textarea.style.height = "auto";
-          textarea.style.height = Math.max(textarea.scrollHeight, exportSize * 1.4) + "px";
-        });
+  const root = document.querySelector("#rblock");
+  html2canvas(root, {
+    onclone: clonedDocument => {
+      const clonedRoot = clonedDocument.querySelector("#rblock");
+      if (!clonedRoot) return;
 
-        clonedRoot.querySelectorAll(".input-equals").forEach(separator => {
-          const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(separator).fontSize) || 24;
-          separator.style.fontSize = Math.round(originalSize * 1.5) + "px";
-        });
-      }
-    }).then(canvas => {
-      let rootElement = document.getElementById("rblock");
+      // Drag controls belong to the editor UI, not to the exported diagram.
+      clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
 
-      var img = canvas.toDataURL("image/png");
+      // Increase text size in the cloned image while keeping the editor unchanged.
+      clonedRoot.querySelectorAll("textarea").forEach(textarea => {
+        const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(textarea).fontSize) || 24;
+        const exportSize = Math.round(originalSize * 1.5);
+        textarea.style.fontSize = exportSize + "px";
+        textarea.style.lineHeight = Math.round(exportSize * 1.2) + "px";
+        textarea.style.height = "auto";
+        textarea.style.height = Math.max(textarea.scrollHeight, exportSize * 1.4) + "px";
+      });
 
-      var link = document.createElement('a');
-      link.download = filename + '.png';
-      link.href = img;
-
-      link.click();
-
-      setAllTextareaValuesToEmptyIfNoValue();
-      /* showParallelLines(); */
-      document.getElementById("png").disabled = false;
-    });
+      clonedRoot.querySelectorAll(".input-equals").forEach(separator => {
+        const originalSize = parseFloat(clonedDocument.defaultView.getComputedStyle(separator).fontSize) || 24;
+        separator.style.fontSize = Math.round(originalSize * 1.5) + "px";
+      });
+    }
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = filename + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }).catch(error => {
+    console.error("PNG export failed:", error);
+  }).finally(() => {
+    setAllTextareaValuesToEmptyIfNoValue();
+    button.disabled = false;
   });
-
-
-  instance.moveTo(0, 0);
-  instance.smoothZoom(0, 0, 100);
-
-
-  instance.on('zoomend', function(e) { });
 }
 
 function setAllTriangles() {
