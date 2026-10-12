@@ -1534,15 +1534,20 @@ function resizeInputNameField(textarea) {
   const computed = window.getComputedStyle(textarea);
   const canvas = resizeInputNameField.measureCanvas || (resizeInputNameField.measureCanvas = document.createElement("canvas"));
   const context = canvas.getContext("2d");
-  context.font = [computed.fontStyle, computed.fontVariant, computed.fontWeight, computed.fontSize, computed.fontFamily].join(" ");
+  context.font = computed.fontStyle + " " + computed.fontWeight + " " + computed.fontSize + " " + computed.fontFamily;
 
-  const content = textarea.value || textarea.placeholder || "";
+  const content = textarea.value || textarea.placeholder || " ";
   const textWidth = context.measureText(content).width;
   const horizontalExtras =
     parseFloat(computed.paddingLeft) + parseFloat(computed.paddingRight) +
-    parseFloat(computed.borderLeftWidth) + parseFloat(computed.borderRightWidth) + 4;
+    parseFloat(computed.borderLeftWidth) + parseFloat(computed.borderRightWidth);
 
-  textarea.style.width = Math.ceil(textWidth + horizontalExtras) + "px";
+  // A little spare room prevents the final glyph from being clipped while the caret moves.
+  textarea.wrap = "off";
+  textarea.style.overflow = "hidden";
+  textarea.style.resize = "none";
+  textarea.style.width = Math.ceil(textWidth + horizontalExtras + 12) + "px";
+  textarea.scrollLeft = 0;
 }
 
 function textareaResize(ev) {
