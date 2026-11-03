@@ -254,9 +254,19 @@ function centerCanvas() {
 
 function zoomInCanvas() {
   if (instance) {
-    let transform = instance.getTransform();
-    let newScale = Math.min(2, transform.scale * 1.25);
-    instance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, newScale);
+    const transform = instance.getTransform();
+    const newScale = Math.min(2, transform.scale * 1.25);
+    const menu = document.querySelector(".menu");
+    const topOfWorkspace = menu ? menu.getBoundingClientRect().bottom : 0;
+
+    // Keep the program aligned directly below the menu while zooming in.
+    instance.zoomAbs(window.innerWidth / 2, topOfWorkspace, newScale);
+    const program = document.getElementById("rblock");
+    if (program) {
+      const programTop = program.getBoundingClientRect().top;
+      const updatedTransform = instance.getTransform();
+      instance.moveTo(updatedTransform.x, updatedTransform.y + topOfWorkspace - programTop);
+    }
   }
 }
 
