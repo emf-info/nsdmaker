@@ -262,9 +262,19 @@ function zoomInCanvas() {
 
 function zoomOutCanvas() {
   if (instance) {
-    let transform = instance.getTransform();
-    let newScale = Math.max(0.3, transform.scale / 1.25);
-    instance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, newScale);
+    const transform = instance.getTransform();
+    const newScale = Math.max(0.3, transform.scale / 1.25);
+    const menu = document.querySelector(".menu");
+    const topOfWorkspace = menu ? menu.getBoundingClientRect().bottom : 0;
+
+    // Zoom around the top edge of the program, then keep it flush below the menu.
+    instance.zoomAbs(window.innerWidth / 2, topOfWorkspace, newScale);
+    const program = document.getElementById("rblock");
+    if (program) {
+      const programTop = program.getBoundingClientRect().top;
+      const updatedTransform = instance.getTransform();
+      instance.moveTo(updatedTransform.x, updatedTransform.y + topOfWorkspace - programTop);
+    }
   }
 }
 
