@@ -164,6 +164,11 @@ setAllTriangles();
 
 let isSpacePressed = false;
 let isCustomPanning = false;
+let isProgramMoving = false;
+let programMoveStartX = 0;
+let programMoveStartY = 0;
+let programMoveStartTransformX = 0;
+let programMoveStartTransformY = 0;
 let panStartX = 0;
 let panStartY = 0;
 let panStartTransformX = 0;
@@ -205,7 +210,30 @@ document.addEventListener("mousedown", function(e) {
   }
 });
 
+document.addEventListener("mousedown", function(e) {
+  const handle = e.target.closest ? e.target.closest("#rblock > .program-drag-handle") : null;
+  if (!handle || e.button !== 0 || !instance) return;
+
+  isProgramMoving = true;
+  programMoveStartX = e.clientX;
+  programMoveStartY = e.clientY;
+  const transform = instance.getTransform();
+  programMoveStartTransformX = transform.x;
+  programMoveStartTransformY = transform.y;
+  document.body.style.cursor = "grabbing";
+  e.preventDefault();
+  e.stopPropagation();
+});
+
 document.addEventListener("mousemove", function(e) {
+  if (isProgramMoving && instance) {
+    const dx = e.clientX - programMoveStartX;
+    const dy = e.clientY - programMoveStartY;
+    instance.moveTo(programMoveStartTransformX + dx, programMoveStartTransformY + dy);
+    e.preventDefault();
+    return;
+  }
+
   if (isCustomPanning && instance) {
     let dx = e.clientX - panStartX;
     let dy = e.clientY - panStartY;
@@ -214,7 +242,11 @@ document.addEventListener("mousemove", function(e) {
   }
 });
 
-document.addEventListener("mouseup", function(e) {
+document.addEventListener("mouseup", function() {
+  if (isProgramMoving) {
+    isProgramMoving = false;
+    document.body.style.cursor = isSpacePressed ? "grab" : "";
+  }
   if (isCustomPanning) {
     isCustomPanning = false;
     document.body.style.cursor = isSpacePressed ? "grab" : "";
@@ -514,6 +546,41 @@ function refreshUsedDropAreas(root = document) {
 }
 
 function ensureProgramDragHandles(root = document) {
+  const program = document.querySelector("#rblock.program");
+  if (program && !program.querySelector(":scope > .program-drag-handle")) {
+    if (getComputedStyle(program).position === "static") {
+      program.style.position = "relative";
+    }
+    const handle = document.createElement("span");
+    handle.className = "program-drag-handle";
+    handle.textContent = "✥";
+    handle.title = "déplacer tout le programme";
+    handle.setAttribute("role", "button");
+    handle.setAttribute("tabindex", "0");
+    handle.setAttribute("aria-label", "Déplacer tout le programme");
+    Object.assign(handle.style, {
+      position: "absolute",
+      top: "4px",
+      right: "4px",
+      zIndex: "1000",
+      width: "32px",
+      height: "32px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      boxSizing: "border-box",
+      border: "1px solid #b8b8b8",
+      borderRadius: "5px",
+      background: "#e6e6e6",
+      color: "#666666",
+      font: "bold 22px/1 Arial, sans-serif",
+      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.15)",
+      cursor: "grab",
+      userSelect: "none"
+    });
+    program.insertBefore(handle, program.firstChild);
+  }
+
   root.querySelectorAll("#rblock .dblock:not(#rblock)").forEach(block => {
     if (block.querySelector(":scope > .drag-handle")) return;
     const handle = document.createElement("span");
@@ -862,7 +929,7 @@ function getImage() {
       const clonedRoot = clonedDocument.querySelector("#rblock");
       if (!clonedRoot) return;
 
-      clonedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+      clonedRoot.querySelectorAll(".drag-handle, .program-drag-handle").forEach(handle => handle.remove());
       const view = clonedDocument.defaultView;
 
       const currentWidth = parseFloat(view.getComputedStyle(clonedRoot).width) || clonedRoot.offsetWidth;
@@ -1491,7 +1558,7 @@ function save() {
 
   var element = document.createElement('a');
   const savedRoot = cloneWithCurrentTextareaValues(rootElement);
-  savedRoot.querySelectorAll(".drag-handle").forEach(handle => handle.remove());
+  savedRoot.querySelectorAll(".drag-handle, .program-drag-handle").forEach(handle => handle.remove());
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(savedRoot.outerHTML));
 
   const filename = getProgramFileName();
