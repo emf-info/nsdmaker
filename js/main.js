@@ -426,6 +426,13 @@ let draggedBlock = null;
 let draggedFromProgram = false;
 let armedDragBlock = null;
 
+function lockAlternativeBranchLabels(root = document) {
+  root.querySelectorAll(".decision.decision-two .decision-two-ta").forEach(label => {
+    label.readOnly = true;
+    label.setAttribute("aria-readonly", "true");
+  });
+}
+
 function refreshProgramBlockColors(root = document) {
   const blocks = [];
   if (root.matches && root.matches("#rblock .dblock:not(#rblock)")) {
@@ -526,10 +533,12 @@ function ensureProgramDragHandles(root = document) {
 }
 
 ensureProgramDragHandles();
+lockAlternativeBranchLabels();
 refreshProgramBlockColors();
 refreshUsedDropAreas();
 new MutationObserver(() => {
   ensureProgramDragHandles();
+  lockAlternativeBranchLabels();
   refreshProgramBlockColors();
   refreshUsedDropAreas();
 }).observe(
