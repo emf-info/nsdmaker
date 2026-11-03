@@ -97,7 +97,7 @@
       </div>
       <div class="decision-branches">
         <div class="decision-branch">
-          <textarea class="decision-two-ta" rows="1" placeholder="Vrai" data-i18n-ph="ph_true" ondrop="return false;"
+          <textarea class="decision-two-ta" rows="1" placeholder="Vrai" readonly aria-readonly="true" data-i18n-ph="ph_true" ondrop="return false;"
             oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
 
@@ -106,7 +106,7 @@
           </div>
         </div>
         <div class="decision-branch">
-          <textarea class="decision-two-ta" rows="1" placeholder="Faux" data-i18n-ph="ph_false" ondrop="return false;"
+          <textarea class="decision-two-ta" rows="1" placeholder="Faux" readonly aria-readonly="true" data-i18n-ph="ph_false" ondrop="return false;"
             oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
             onfocusout="enableDraggableParent(event);"></textarea>
           <div class="droparea drop-before-end decision-two-da" ondrop="drop(event)" ondragover="allowDrop(event)"
