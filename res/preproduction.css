@@ -1,0 +1,167 @@
+/* Styles used only by preproduction.html */
+.preproduction-play-button {
+  float: right;
+  margin-left: 0.6rem;
+  min-width: 42px;
+  height: 38px;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+  background: #2f8f46;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.preproduction-play-button:hover,
+.execution-actions button:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+.execution-panel {
+  position: fixed;
+  z-index: 22000;
+  top: 100px;
+  right: 24px;
+  width: min(520px, calc(100vw - 40px));
+  max-height: calc(100vh - 125px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 2px solid #5171a5;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #202124;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  font-family: Arial, sans-serif;
+}
+
+.execution-panel[hidden],
+.execution-input[hidden] {
+  display: none;
+}
+
+.execution-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.execution-header h2,
+.execution-output-section h3 {
+  margin: 0;
+  color: #283d5c;
+}
+
+.execution-header #execution-close {
+  border: 0;
+  background: transparent;
+  color: #444;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.execution-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.execution-actions button,
+.execution-input button {
+  border: 1px solid #5171a5;
+  border-radius: 5px;
+  padding: 7px 10px;
+  background: #5171a5;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.execution-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#execution-status {
+  margin-left: auto;
+  font-size: 13px;
+  color: #444;
+}
+
+.execution-panel details {
+  margin: 10px 0 14px;
+}
+
+.execution-panel summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.generated-js,
+.execution-output {
+  overflow: auto;
+  max-height: 36vh;
+  margin: 8px 0 0;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #f6f8fa;
+  color: #202124;
+  font: 13px/1.45 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.execution-output {
+  min-height: 50px;
+}
+
+.execution-output-section h3 {
+  font-size: 16px;
+}
+
+.execution-input {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #9bb3d3;
+  border-radius: 6px;
+  background: #f3f7fc;
+}
+
+.execution-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.execution-input-row {
+  display: flex;
+  gap: 6px;
+}
+
+.execution-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid #8995a3;
+  border-radius: 4px;
+}
+
+.execution-input #execution-input-cancel {
+  background: #6b7280;
+  border-color: #6b7280;
+}
+
+@media (max-width: 700px) {
+  .execution-panel {
+    top: 84px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 100px);
+  }
+}
