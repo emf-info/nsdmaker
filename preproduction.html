@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NSD-Maker — préproduction</title>
+  <link rel="stylesheet" href="res/styles.css">
+  <link rel="stylesheet" href="res/preproduction.css">
+  <script src='js/panzoom/panzoom.min.js'></script>
+  <script src='js/html2canvas.min.js'></script>
+</head>
+
+<body>
+  <div class="menu">
+    <button data-i18n="btn_open" onclick="upload();">Ouvrir <b>[^O]</b></button>
+    <button data-i18n="btn_save" onclick="save();">Enregistrer <b>[^S]</b></button>
+    <!--<button onclick="printContent();">Imprimer <b>[^P]</b></button>-->
+    <button data-i18n="btn_delete" onclick="removeElement();">Supprimer <b>[DEL]</b></button>
+    <button data-i18n="btn_center" onclick="centerCanvas();">Centrer <b>[^A]</b></button>
+    <button data-i18n="btn_undo" onclick="undo();">Annuler <b>[^Z]</b></button>
+    <button data-i18n="btn_redo" onclick="redo();">Rétablir <b>[^Y]</b></button>
+    <button id="png" data-i18n="btn_export" onclick="getImage();">Exporter l'image <b>[^E]</b></button>
+    <button data-i18n="btn_clear" onclick="clearCanvas();">Tout effacer <b>[^DEL]</b></button>
+    <select id="lang-select" class="lang-select" onchange="setLanguage(this.value)">
+      <option value="fr">FR</option>
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
+    <button type="button" id="run-program" class="preproduction-play-button" aria-label="Exécuter le programme" title="Exécuter le programme">▶</button>
+  </div>
+
+
+  <div id="canvas">
+    <div id="rblock" class="dblock program">
+      <textarea rows="1" placeholder="Program" data-i18n-ph="ph_program" ondrop="return false;"
+        oninput="textareaResize(event);"></textarea>
+      <div class="droparea drop-before-end" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+    </div>
+
+  </div>
+
+  <div id="sidebar">
+
+    <h2 data-i18n="heading_instruction">Instruction</h2>
+
+    <div class="dblock process" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+        onfocusout="enableDraggableParent(event);"></textarea>
+    </div>
+
+    <div class="dblock process output-instruction" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea rows="1" placeholder="Instruction" data-i18n-ph="ph_instruction" data-i18n-value="keyword_display" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+        onfocusout="enableDraggableParent(event);">affiche</textarea>
+    </div>
+
+    <div class="dblock input-block" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <div class="input-block-fields">
+        <textarea class="input-name" rows="1" placeholder="nom" data-i18n-ph="ph_input_name" ondrop="return false;"
+          oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+        <span class="input-equals">=</span>
+        <textarea class="input-command" rows="1" placeholder="Invite de commande" data-i18n-ph="ph_input_command"
+          ondrop="return false;" oninput="textareaResize(event);" ondragstart="return false;"
+          onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);"
+          data-i18n-value="call_prompt">demande("")</textarea>
+      </div>
+    </div>
+
+    <h2 data-i18n="heading_alternative">Alternative</h2>
+
+    <div class="dblock decision decision-two" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea rows="1" placeholder="(Alternative)" data-i18n-ph="ph_alternative" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+        onfocusout="enableDraggableParent(event);"></textarea>
+      <div class="triangles">
+        <svg>
+          <line x1="-5%" y1="0" x2="105%" y2="100%" style="stroke:rgb(127,127,127);stroke-width:5" />
+        </svg>
+        <svg>
+          <line x1="-5%" y1="100%" x2="105%" y2="0" style="stroke:rgb(127,127,127);stroke-width:5" />
+        </svg>
+      </div>
+      <div class="decision-branches">
+        <div class="decision-branch">
+          <textarea class="decision-two-ta" rows="1" placeholder="Vrai" readonly aria-readonly="true" data-i18n-ph="ph_true" ondrop="return false;"
+            oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+            onfocusout="enableDraggableParent(event);"></textarea>
+
+          <div class="droparea drop-before-end decision-two-da" ondrop="drop(event)" ondragover="allowDrop(event)"
+            ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+          </div>
+        </div>
+        <div class="decision-branch">
+          <textarea class="decision-two-ta" rows="1" placeholder="Faux" readonly aria-readonly="true" data-i18n-ph="ph_false" ondrop="return false;"
+            oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+            onfocusout="enableDraggableParent(event);"></textarea>
+          <div class="droparea drop-before-end decision-two-da" ondrop="drop(event)" ondragover="allowDrop(event)"
+            ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <h2 data-i18n="heading_for_loop">Boucle</h2>
+
+    <div class="dblock iteration for-loop" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <div class="for-header">
+        <textarea class="left-ta rewh-ta for-variable" rows="1" placeholder="i" title="Nom de la variable"
+          data-i18n-title="title_for_variable" ondrop="return false;" oninput="textareaResize(event);"
+          ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+        <span class="for-sep" data-i18n="sep_for_assign">pour</span>
+        <textarea class="left-ta rewh-ta for-start" rows="1" placeholder="1" title="Valeur de début"
+          data-i18n-title="title_for_start" ondrop="return false;" oninput="textareaResize(event);"
+          ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+        <span class="for-sep" data-i18n="sep_for">à</span>
+        <textarea class="left-ta rewh-ta for-end" rows="1" placeholder="10" title="Valeur de fin"
+          data-i18n-title="title_for_end" ondrop="return false;" oninput="textareaResize(event);"
+          ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+          onfocusout="enableDraggableParent(event);"></textarea>
+      </div>
+      <div class="droparea drop-before-end drop-iteration" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+    </div>
+
+    <h2 data-i18n="heading_while">Tant que</h2>
+
+    <div class="dblock iteration" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea class="left-ta rewh-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition"
+        ondrop="return false;" oninput="textareaResize(event);" ondragstart="return false;"
+        onfocusin="disableDraggableParent(event);" onfocusout="enableDraggableParent(event);"></textarea>
+      <div class="droparea drop-before-end drop-iteration" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+    </div>
+
+    <h2 data-i18n="heading_until">Jusqu'à</h2>
+    <div class="dblock repeatwhile" draggable="true" ondragstart="drag(event)">
+      <div class="droparea drop-before-begin" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <div class="droparea drop-before-end drop-repeatwhile" ondrop="drop(event)" ondragover="allowDrop(event)"
+        ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      </div>
+      <textarea class="left-ta" rows="1" placeholder="Condition" data-i18n-ph="ph_condition" ondrop="return false;"
+        oninput="textareaResize(event);" ondragstart="return false;" onfocusin="disableDraggableParent(event);"
+        onfocusout="enableDraggableParent(event);"></textarea>
+    </div>
+
+
+
+  </div>
+
+  <section id="execution-panel" class="execution-panel" aria-labelledby="execution-title" hidden>
+    <header class="execution-header">
+      <h2 id="execution-title">Test du programme</h2>
+      <button type="button" id="execution-close" aria-label="Fermer">×</button>
+    </header>
+    <div class="execution-actions">
+      <button type="button" id="execution-run">▶ Exécuter</button>
+      <button type="button" id="execution-stop" disabled>■ Arrêter</button>
+      <span id="execution-status" role="status"></span>
+    </div>
+    <details open>
+      <summary>JavaScript généré</summary>
+      <pre id="generated-js" class="generated-js"><code></code></pre>
+    </details>
+    <section class="execution-output-section" aria-label="Résultat de l'exécution">
+      <h3>Sortie du programme</h3>
+      <pre id="execution-output" class="execution-output" aria-live="polite"></pre>
+    </section>
+    <form id="execution-input" class="execution-input" hidden>
+      <label id="execution-input-label" for="execution-input-value"></label>
+      <div class="execution-input-row">
+        <input id="execution-input-value" type="text" autocomplete="off">
+        <button type="submit" id="execution-input-submit">Valider</button>
+        <button type="button" id="execution-input-cancel">Annuler</button>
+      </div>
+    </form>
+  </section>
+
+  <div class="canvas-controls">
+    <button title="Zoomer (+)" data-i18n-title="title_zoom_in" onclick="zoomInCanvas();">+</button>
+    <button title="Dézoomer (-)" data-i18n-title="title_zoom_out" onclick="zoomOutCanvas();">-</button>
+    <button title="Centrer le schéma" data-i18n-title="title_center" onclick="centerCanvas();"><span class="center-symbol" aria-hidden="true">⌖</span></button>
+  </div>
+
+  <div id="context-menu" class="context-menu hidden">
+    <div class="context-menu-item remove-item" onclick="removeSelectedFromContextMenu()">
+      <span class="icon">🗑️</span> <span data-i18n="ctx_delete">Supprimer ce bloc</span>
+    </div>
+
+    <div class="context-menu-item move-item" onclick="moveContextMenuBlock(-1)">
+      <span class="icon">⬆️</span> <span data-i18n="ctx_move_up">Déplacer vers le haut</span>
+    </div>
+    <div class="context-menu-item move-item" onclick="moveContextMenuBlock(1)">
+      <span class="icon">⬇️</span> <span data-i18n="ctx_move_down">Déplacer vers le bas</span>
+    </div>
+
+    <div class="context-menu-separator"></div>
+
+    <div class="context-menu-item has-submenu" id="submenu-before">
+      <span class="icon">⬆️</span> <span data-i18n="ctx_add_before">Ajouter avant...</span>
+      <span class="arrow">▶</span>
+      <div class="context-submenu">
+        <div class="context-menu-item" data-type="process" onclick="addElementFromContextMenu('process', 'before')">
+          <span data-i18n="ctx_instruction">Instruction</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-two"
+          onclick="addElementFromContextMenu('decision-two', 'before')"><span
+            data-i18n="ctx_alternative">Alternative</span></div>
+        <div class="context-menu-item" data-type="decision" onclick="addElementFromContextMenu('decision', 'before')">
+          <span data-i18n="ctx_selection">Sélection</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-item"
+          onclick="addElementFromContextMenu('decision-item', 'before')"><span data-i18n="ctx_selection_branch">Branche
+            (Sélection)</span></div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="for-loop" onclick="addElementFromContextMenu('for-loop', 'before')">
+          <span data-i18n="ctx_for_loop">Boucle (Pour)</span>
+        </div>
+        <div class="context-menu-item" data-type="iteration" onclick="addElementFromContextMenu('iteration', 'before')">
+          <span data-i18n="ctx_while">Tant que</span>
+        </div>
+        <div class="context-menu-item" data-type="repeatwhile"
+          onclick="addElementFromContextMenu('repeatwhile', 'before')"><span data-i18n="ctx_until">Jusqu'à</span></div>
+        <div class="context-menu-item" data-type="begin-end" onclick="addElementFromContextMenu('begin-end', 'before')">
+          <span data-i18n="ctx_endless">Sans fin</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="parallel" onclick="addElementFromContextMenu('parallel', 'before')">
+          <span data-i18n="ctx_parallel">Traitement parallèle</span>
+        </div>
+        <div class="context-menu-item" data-type="parallel-item"
+          onclick="addElementFromContextMenu('parallel-item', 'before')"><span data-i18n="ctx_parallel_branch">Branche
+            (Parallèle)</span></div>
+      </div>
+    </div>
+
+    <div class="context-menu-item has-submenu" id="submenu-after">
+      <span class="icon">⬇️</span> <span data-i18n="ctx_add_after">Ajouter après...</span>
+      <span class="arrow">▶</span>
+      <div class="context-submenu">
+        <div class="context-menu-item" data-type="process" onclick="addElementFromContextMenu('process', 'after')">
+          <span data-i18n="ctx_instruction">Instruction</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-two"
+          onclick="addElementFromContextMenu('decision-two', 'after')"><span
+            data-i18n="ctx_alternative">Alternative</span></div>
+        <div class="context-menu-item" data-type="decision" onclick="addElementFromContextMenu('decision', 'after')">
+          <span data-i18n="ctx_selection">Sélection</span>
+        </div>
+        <div class="context-menu-item" data-type="decision-item"
+          onclick="addElementFromContextMenu('decision-item', 'after')"><span data-i18n="ctx_selection_branch">Branche
+            (Sélection)</span></div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="for-loop" onclick="addElementFromContextMenu('for-loop', 'after')">
+          <span data-i18n="ctx_for_loop">Boucle (Pour)</span>
+        </div>
+        <div class="context-menu-item" data-type="iteration" onclick="addElementFromContextMenu('iteration', 'after')">
+          <span data-i18n="ctx_while">Tant que</span>
+        </div>
+        <div class="context-menu-item" data-type="repeatwhile"
+          onclick="addElementFromContextMenu('repeatwhile', 'after')"><span data-i18n="ctx_until">Jusqu'à</span></div>
+        <div class="context-menu-item" data-type="begin-end" onclick="addElementFromContextMenu('begin-end', 'after')">
+          <span data-i18n="ctx_endless">Sans fin</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-type="parallel" onclick="addElementFromContextMenu('parallel', 'after')">
+          <span data-i18n="ctx_parallel">Traitement parallèle</span>
+        </div>
+        <div class="context-menu-item" data-type="parallel-item"
+          onclick="addElementFromContextMenu('parallel-item', 'after')"><span data-i18n="ctx_parallel_branch">Branche
+            (Parallèle)</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="js/main.js"></script>
+<script src="js/preproduction.js"></script>
+
+</html>
