@@ -382,8 +382,9 @@
         const bodyArea = block.querySelector(":scope > .droparea.drop-iteration");
         const body = sequence(bodyArea, context);
         return "{\n" +
-          "  const " + startName + " = " + startExpression + ";\n" +
-          "  const " + endName + " = " + endExpression + ";\n" +
+          "  const " + startName + " = Number(" + startExpression + ");\n" +
+          "  const " + endName + " = Number(" + endExpression + ");\n" +
+          "  if (!Number.isFinite(" + startName + ") || !Number.isFinite(" + endName + ")) throw new Error('Les bornes de la boucle doivent être numériques.');\n" +
           "  const " + stepName + " = " + startName + " <= " + endName + " ? 1 : -1;\n" +
           "  " + variable + " = " + startName + ";\n" +
           "  for (; " + stepName + " > 0 ? " + variable + " <= " + endName + " : " + variable + " >= " + endName + "; " + variable + " += " + stepName + ") {\n" +
@@ -618,6 +619,11 @@
     pendingInputId = null;
     inputForm.hidden = true;
   });
+
+  // Keep editor-wide keyboard shortcuts from acting on a block while students use the test panel.
+  document.addEventListener("keydown", event => {
+    if (panel.contains(event.target)) event.stopImmediatePropagation();
+  }, true);
 
   document.getElementById("lang-select").addEventListener("change", updateLabels);
   updateLabels();
